@@ -102,7 +102,7 @@ class AuthController extends GetxController implements GetxService {
 
   Future<void> changePassword(String oldPassword, String newPassword, String confirmNewPassword) async {
    final pref = await SharedPreferences.getInstance();
-    var userid = pref.getString('50');
+    var userid = pref.getString('user_id');
   final url = AppContent.BASE_URL+AppContent.CHANGE_PASS;
   final body = {
     'user_id': userid,
@@ -114,11 +114,13 @@ class AuthController extends GetxController implements GetxService {
   final response = await http.post(Uri.parse(url), body: body);
 
   if (response.statusCode == 200) {
-
-    showCustomSnackBar(response.body.toString(), isError: false);
+       var responseData = jsonDecode(response.body);
+    if (responseData != null) {
+    showCustomSnackBar(responseData['message'].toString(), isError: false);
+    print(responseData['message']);
     Get.to(UserProfile(title: '',));
     update();
-  
+    } 
     
 
   } else {
@@ -129,4 +131,7 @@ class AuthController extends GetxController implements GetxService {
   update();
 }
 
+  
+  
+  
   }
