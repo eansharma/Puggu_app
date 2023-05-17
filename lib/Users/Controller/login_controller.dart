@@ -35,9 +35,7 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> Verify_OTP(
-    String otp,
-  ) async {
+  Future<void> Verify_OTP(String otp,) async {
     isLoading = true;
     update();
     final pref = await SharedPreferences.getInstance();
@@ -94,5 +92,24 @@ class AuthController extends GetxController implements GetxService {
     isLoading = false;
     update();
   }
-  
+
+
+  Future<void> Reset_password() async{
+
+         
+          isLoading= true;
+         var request = http.Request('POST', Uri.parse(AppContent.BASE_URL+ AppContent.RESET_PASS));
+
+
+          http.StreamedResponse response = await request.send();
+
+          if (response.statusCode == 200) {
+            print(await response.stream.bytesToString());
+          }
+          else {
+            print(response.reasonPhrase);
+          }
+
+  }
+
   }

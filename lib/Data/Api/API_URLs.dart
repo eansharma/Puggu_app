@@ -7,6 +7,7 @@ class AppContent {
   static String SELECT_CITY_IMAGE = '/api/cities';
   static String FOOD_TYPE = '/api/foodtype';
   static String VERIFY_OTP = '/api/otp_verification';
+  static String RESET_PASS ='/api/reset-password';
   static String REGISTER_USER = '/api/profile_update/44';
   static String PROFILE_USER = '/api/userprofile/44';
  
