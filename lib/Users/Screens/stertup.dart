@@ -6,7 +6,7 @@ import 'package:pugau/Users/Screens/Search/main_search.dart';
 import 'package:pugau/Users/Screens/Order/place_on_order.dart';
 import 'package:pugau/Users/Screens/Restaurants/restaurent_datails.dart';
 import 'package:pugau/Users/Screens/Location/select_location.dart';
-import 'package:pugau/Users/Screens/user_profile.dart';
+import 'package:pugau/Users/Screens/Profile/user_profile.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
