@@ -45,7 +45,7 @@ class _category_foodState extends State<category_food> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                   image: NetworkImage(AppContent.BASE_URL +
-                                      AppContent.food_imgae +
+                                      '/public/uploads/foodType/' +
                                       controller.myFood[index].image
                                           .toString()),
                                   fit: BoxFit.cover)),

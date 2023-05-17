@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:pugau/Users/Controller/food_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
 import 'package:pugau/Users/Screens/Order/place_on_order.dart';
-import 'package:pugau/Users/Screens/Restaurants/restaurent_datails.dart';
 import 'package:pugau/Users/Screens/Location/select_location.dart';
 import 'package:pugau/Users/Screens/user_profile.dart';
-import 'package:pugau/Data/Api/API_URLs.dart';
-import 'package:pugau/util/theme/Pugau_Styles.dart';
 import 'package:pugau/widget/View/Slider.dart';
 import 'package:pugau/widget/View/category_food.dart';
 import 'package:pugau/widget/View/food_type.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../util/theme/Pugau_theme_colors.dart';
 import '../../util/Helper/helper.dart';
-import 'favorite.dart';
+
 import 'Search/main_search.dart';
 
 class Food extends StatefulWidget {

@@ -245,7 +245,7 @@ class _SelectCityState extends State<SelectCity> {
                                       image: DecorationImage(
                                           image: NetworkImage(AppContent
                                                   .BASE_URL +
-                                              AppContent.city_image +
+                                              '/public/uploads/city/' +
                                               '${_cityController.CityList[index].image}'),
                                           fit: BoxFit.cover)),
                                 ),
