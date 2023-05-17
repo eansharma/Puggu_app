@@ -16,14 +16,12 @@ class Slider_Screen extends StatefulWidget {
 }
 
 class _Slider_ScreenState extends State<Slider_Screen> {
-
   final BannerController bannerController = Get.put(BannerController());
 
   int selectindex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         CarouselSlider.builder(
@@ -38,22 +36,20 @@ class _Slider_ScreenState extends State<Slider_Screen> {
               viewportFraction: 0.99,
               initialPage: 0,
               aspectRatio: 2 / 4.2),
-              itemBuilder: (BuildContext context, int index, int realIndex) {
-              return Obx(() => ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Image(
-                  image: NetworkImage(AppContent.BASE_URL
-                   + AppContent.banner_image
-                    +'${bannerController.myBanner[index].image}'),
-                  fit: BoxFit.cover,
-                  width: 94.5.w,
-                ),
-              ));
-
+          itemBuilder: (BuildContext context, int index, int realIndex) {
+            return Obx(() => ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image(
+                    image: NetworkImage(AppContent.BASE_URL +
+                        '/public/uploads/banner/' +
+                        bannerController.myBanner[index].image.toString()),
+                    fit: BoxFit.cover,
+                    width: 94.5.w,
+                  ),
+                ));
           },
           itemCount: 4,
         ),
-
         SizedBox(
           height: 3.h,
         ),

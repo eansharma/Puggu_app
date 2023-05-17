@@ -9,8 +9,9 @@ class AppContent {
   static String VERIFY_OTP = '/api/otp_verification';
   static String REGISTER_USER = '/api/profile_update/44';
   static String PROFILE_USER = '/api/userprofile/44';
- 
+  static String BANNER = '/api/banner';
+
   static String food_imgae = '/public/uploads/foodType/';
   static String city_image = '/public/uploads/city/';
-  static String banner_image = '/api/banner';
+  static String banner_image = '/public/uploads/banner/';
 }
