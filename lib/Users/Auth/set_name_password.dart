@@ -267,6 +267,9 @@ class _SetNamePasswordState extends State<SetNamePassword> {
                               ],
                             ),
                           ),
+                       
+                       
+                       
                         ),
                       ],
                     ),

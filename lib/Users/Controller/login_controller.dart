@@ -9,7 +9,8 @@ import 'package:pugau/Data/Api/API_URLs.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Screens/user_profile.dart';
+import '../Screens/Profile/user_profile.dart';
+
 
 class AuthController extends GetxController implements GetxService {
   bool isLoading = false;
@@ -66,40 +67,48 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-// For Register User
-  Future<void> User_Register(
-    String name,
-    String password,
-    String city,
-    String address,
-    String phone,
-  ) async {
-    isLoading = true;
-    update();
-    final pref = await SharedPreferences.getInstance();
-    var userid = pref.getString('user_id');
-    final response = await http
-        .post(Uri.parse(AppContent.BASE_URL + AppContent.REGISTER_USER), body: {
-      'name': name,
-      'password': password,
-      'userid': userid,
-      'phone': phone,
-      'city': city,
-      'address': address,
-    });
-    var res = jsonDecode(response.body);
+              // For Register User
+                   Future<void> User_Register(
+                    String name,
+                    String password,
+                    String city,
+                    String address,
+                    String phone,
+                  ) async {
+                    isLoading = true;
+                    update();
 
-    if (res['code'] == 200) {
-      showCustomSnackBar(res['message'].toString(), isError: false);
-      Get.to(Home(
-        title: '',
-      ));
-    } else {
-      showCustomSnackBar(res['message'].toString(), isError: true);
-    }
-    isLoading = false;
-    update();
-  }
+                    final pref = await SharedPreferences.getInstance();
+                    var userId = pref.getString('user_id');
+
+                    final response = await http.post(
+                      Uri.parse(AppContent.BASE_URL + AppContent.REGISTER_USER),
+                      body: {
+                        'name': name,
+                        'password': password,
+                        'user_id': userId,
+                        'phone': phone,
+                        'city': city,
+                        'address': address,
+                      },
+                    );
+
+                    var res = jsonDecode(response.body);
+
+                    if (res['success'] == true) {
+                      showCustomSnackBar(res['message'].toString(), isError: false);
+                      print(userId);
+                      Get.to(Home(
+                        title: '',
+                      ));
+                    } else {
+                      showCustomSnackBar(res['message'].toString(), isError: true);
+                    }
+
+                    isLoading = false;
+                    update();
+                  }
+
 
     
        
@@ -124,6 +133,8 @@ class AuthController extends GetxController implements GetxService {
     if (responseData != null) {
     showCustomSnackBar(responseData['message'].toString(), isError: false);
     print(responseData['message']);
+    //  print(userid);
+   
     Get.to(UserProfile(title: '',));
     update();
     } 

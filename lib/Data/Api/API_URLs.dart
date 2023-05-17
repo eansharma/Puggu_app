@@ -9,7 +9,7 @@ class AppContent {
   static String VERIFY_OTP = '/api/otp_verification';
   static String RESET_PASS ='/api/reset-password';
   static String CHANGE_PASS ='/api/change-password';
-  static String REGISTER_USER = '/api/profile_update/44';
+  static String REGISTER_USER = '/api/profile-update';
   static String PROFILE_USER = '/api/userprofile/44';
   static String BANNER = '/api/banner';
   static String RESET_PASSWORD = '/api/reset-password';
