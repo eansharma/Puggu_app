@@ -1,7 +1,12 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:pugau/widget/customSnakebar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../util/Helper/helper.dart';
+import '../../Controller/login_controller.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key, required String title});
@@ -11,10 +16,24 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+
+   final AuthController _authController = Get.put(AuthController());
+
+  TextEditingController current_password = TextEditingController();
+  TextEditingController new_password = TextEditingController();
+  TextEditingController new_confirm_password = TextEditingController();
+
+ 
+
+ 
+
+   
   bool isTrue=false;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+   return GetBuilder<AuthController>(builder: ( _authController){
+
+     return SafeArea(
       child: Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,6 +62,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                        ],
                      ),
                    ), 
+      
+      
        const SizedBox(height: 10,),
        const Divider(thickness: 2,),
         Container(
@@ -73,6 +94,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                               child: TextFormField(
                                                 keyboardType: TextInputType.text,
                                                 textAlign: TextAlign.start,
+                                                controller: current_password,
                                             //  controller: number,
                                             textAlignVertical: TextAlignVertical.bottom,
                                             style: const TextStyle(fontSize: 11,fontWeight: FontWeight.w500),
@@ -93,14 +115,17 @@ class _ChangePasswordState extends State<ChangePassword> {
                                 ),
                                                 ),
                                               )),
+                                             
+                                             
                                               const SizedBox(height: 10,),
                                               const Text('New Password',style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
-                   const SizedBox(height: 10,),
-                    SizedBox(height: 30,
+                                                  const SizedBox(height: 10,),
+                                                   SizedBox(height: 30,
                                               child: TextFormField(
                                                 obscureText: true,
                                                 keyboardType: TextInputType.text,
                                                 textAlign: TextAlign.start,
+                                                controller: new_password,
                                             //  controller: number,
                                             textAlignVertical: TextAlignVertical.bottom,
                                             style: const TextStyle(fontSize: 11,fontWeight: FontWeight.w500),
@@ -136,12 +161,13 @@ class _ChangePasswordState extends State<ChangePassword> {
                                                ),
                                               
                                               const Text('Confirm Password',style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
-                  const SizedBox(height: 10,),
-                    SizedBox(height: 30,
+                                                  const SizedBox(height: 10,),
+                                                    SizedBox(height: 30,
                                               child: TextFormField(
                                                 obscureText: true,
                                                 keyboardType: TextInputType.text,
                                                 textAlign: TextAlign.start,
+                                                controller: new_confirm_password,
                                             //  controller: number,
                                             textAlignVertical: TextAlignVertical.bottom,
                                             style: const TextStyle(fontSize: 11,fontWeight: FontWeight.w500),
@@ -171,12 +197,34 @@ class _ChangePasswordState extends State<ChangePassword> {
                   textColor: Colors.black,
                   color: Colors.red,
                   onPressed: (() {
+
+                                if (current_password.text.isEmpty) {
+                                  showCustomSnackBar('Current Password is Empty', isError: true);
+                                } 
+                                else if (new_password.text.isEmpty) {
+                                  showCustomSnackBar('New Password is Empty', isError: true);
+                                } 
+                                else if (new_confirm_password.text.isEmpty) {
+                                  showCustomSnackBar('Confirm password is empty', isError: true);
+                                } 
+                                else if (new_password.text == new_confirm_password.text) {
+                                  _authController.changePassword(
+                                    current_password.text,
+                                    new_password.text,
+                                    new_confirm_password.text,
+                                  );
+                                }
+                                else {
+                                  showCustomSnackBar('New Password and Confirm Password do not match', isError: true);
+                                }
+
+
                 //            Navigator.push(
                 //    context,
                 //    MaterialPageRoute(builder: (context) => const ResetPassword  (title: '',)),
                 //  );
               
-                _popup();
+                // _popup();
                  }
                  
                  ),
@@ -198,7 +246,15 @@ class _ChangePasswordState extends State<ChangePassword> {
           ],
         ),
     ));
+ 
+ 
+
+   });
   }
+ 
+ 
+ 
+ 
   void _popup(){
      AwesomeDialog(
           dismissOnTouchOutside: true,

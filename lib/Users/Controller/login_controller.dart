@@ -8,6 +8,8 @@ import 'package:pugau/Data/Api/API_URLs.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Screens/user_profile.dart';
+
 class AuthController extends GetxController implements GetxService {
   bool isLoading = false;
 
@@ -93,23 +95,38 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
+    
+       
+       // change password
+       
 
-  Future<void> Reset_password() async{
+  Future<void> changePassword(String oldPassword, String newPassword, String confirmNewPassword) async {
+   final pref = await SharedPreferences.getInstance();
+    var userid = pref.getString('50');
+  final url = AppContent.BASE_URL+AppContent.CHANGE_PASS;
+  final body = {
+    'user_id': userid,
+    'old_password': oldPassword,
+    'new_password': newPassword,
+    'new_confirm_password': confirmNewPassword,
+  };
 
-         
-          isLoading= true;
-         var request = http.Request('POST', Uri.parse(AppContent.BASE_URL+ AppContent.RESET_PASS));
+  final response = await http.post(Uri.parse(url), body: body);
 
+  if (response.statusCode == 200) {
 
-          http.StreamedResponse response = await request.send();
+    showCustomSnackBar(response.body.toString(), isError: false);
+    Get.to(UserProfile(title: '',));
+    update();
+  
+    
 
-          if (response.statusCode == 200) {
-            print(await response.stream.bytesToString());
-          }
-          else {
-            print(response.reasonPhrase);
-          }
-
+  } else {
+        showCustomSnackBar(response.body.toString(), isError: false);
+  
   }
+  isLoading = false;
+  update();
+}
 
   }
