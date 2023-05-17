@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pugau/Users/Auth/DashBoard.dart';
+import 'package:pugau/Users/Auth/Forget/set_new_password.dart';
 import 'package:pugau/Users/Auth/set_name_password.dart';
 import 'package:pugau/Users/Auth/verify_otp.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
@@ -18,6 +19,7 @@ class AuthController extends GetxController implements GetxService {
     var set1 = pref.setString('user_id', value);
   }
 
+// for Genrate Otp
   Future<void> generateOTP(String phone) async {
     isLoading = true;
     update();
@@ -37,7 +39,10 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> Verify_OTP(String otp,) async {
+// for Verify Otp
+  Future<void> Verify_OTP(
+    String otp,
+  ) async {
     isLoading = true;
     update();
     final pref = await SharedPreferences.getInstance();
@@ -61,6 +66,7 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
+// For Register User
   Future<void> User_Register(
     String name,
     String password,
@@ -133,5 +139,31 @@ class AuthController extends GetxController implements GetxService {
 
   
   
-  
+
+  // For reset Password
+  Future<void> resetPassword(
+    String phone_no,
+  ) async {
+    isLoading = true;
+    update();
+    final pref = await SharedPreferences.getInstance();
+    var userid = pref.getString('user_id');
+    final response = await http.post(
+        Uri.parse(AppContent.BASE_URL + AppContent.RESET_PASSWORD),
+        body: {
+          'phone_no': phone_no,
+          'userid': userid,
+        });
+    var res = jsonDecode(response.body);
+
+    print(res);
+    if (res['code'] == 200) {
+      Get.to(SetNewPassword(title: ''));
+      showCustomSnackBar(res['message'].toString(), isError: false);
+    } else {
+      showCustomSnackBar(res['message'].toString(), isError: true);
+    }
+    isLoading = false;
+    update();
   }
+}

@@ -5,7 +5,7 @@ import 'package:pugau/Users/Controller/food_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
 import 'package:pugau/Users/Screens/Order/place_on_order.dart';
 import 'package:pugau/Users/Screens/Location/select_location.dart';
-import 'package:pugau/Users/Screens/user_profile.dart';
+import 'package:pugau/Users/Screens/Profile/user_profile.dart';
 import 'package:pugau/widget/View/Slider.dart';
 import 'package:pugau/widget/View/category_food.dart';
 import 'package:pugau/widget/View/food_type.dart';

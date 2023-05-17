@@ -236,7 +236,7 @@ class _SetNamePasswordState extends State<SetNamePassword> {
                               } else if (confirm_password.text.isEmpty) {
                                 showCustomSnackBar("Confirm Password is Empty",
                                     isError: true);
-                              } else if (password.text ==
+                              } else if (password.text !=
                                   confirm_password.text) {
                                 showCustomSnackBar("Password is not match ",
                                     isError: true);
