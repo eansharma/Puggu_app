@@ -2,12 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
-import 'package:pugau/Users/Controller/banner_controller.dart';
-import 'package:pugau/util/theme/Pugau_images.dart';
-import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../Data/Api/API_URLs.dart';
+import '../../Users/Controller/banner_controller.dart';
+import '../../util/theme/Pugau_theme_colors.dart';
 
 class Slider_Screen extends StatefulWidget {
   const Slider_Screen({Key? key});
@@ -22,6 +21,7 @@ class _Slider_ScreenState extends State<Slider_Screen> {
   int selectindex = 0;
 
   bool isLoding = false;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,9 +39,12 @@ class _Slider_ScreenState extends State<Slider_Screen> {
               initialPage: 0,
               aspectRatio: 2 / 4.2),
           itemBuilder: (BuildContext context, int index, int realIndex) {
-            return Obx(() {
-              return bannerController.myBanner.isEmpty
-                  ? Center(
+
+           return GetBuilder<BannerController>(
+            // Define the bcontroller variable here
+            builder: (bcontroller){
+              return bcontroller.genieData.isEmpty
+               ? Center(
                       child: CircularProgressIndicator(
                         color: PugauColors.themeColor,
                       ),
@@ -51,14 +54,18 @@ class _Slider_ScreenState extends State<Slider_Screen> {
                       child: Image(
                         image: NetworkImage(AppContent.BASE_URL +
                             '/public/uploads/banner/' +
-                            bannerController.myBanner[index].image.toString()),
+                           bannerController.genieData[index]['image'].toString()),
                         fit: BoxFit.cover,
                         width: 94.5.w,
                       ),
                     );
-            });
+            }
+
+            );
+
+
           },
-          itemCount: 4,
+          itemCount: bannerController.genieData.length, // Use bannerController instead of bcontroller
         ),
         SizedBox(
           height: 3.h,
