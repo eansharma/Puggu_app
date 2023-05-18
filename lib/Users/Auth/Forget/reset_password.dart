@@ -12,7 +12,7 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
-  final TextEditingController number = TextEditingController();
+  final TextEditingController phone_no = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -84,7 +84,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             child: TextFormField(
                               keyboardType: TextInputType.phone,
                               textAlign: TextAlign.start,
-                              controller: number,
+                              controller: phone_no,
                               textAlignVertical: TextAlignVertical.bottom,
                               style: const TextStyle(
                                   fontSize: 11, fontWeight: FontWeight.w500),
@@ -127,11 +127,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   textColor: Colors.black,
                                   color: PugauColors.themeColor,
                                   onPressed: (() {
-                                    if (number.text.isEmpty) {
+                                    if (phone_no.text.isEmpty) {
                                       showCustomSnackBar('Phone Is Empty',
                                           isError: true);
                                     } else {
-                                      _contorller.resetPassword(number.text);
+                                      _contorller.resetPassword(phone_no.text);
                                     }
                                   }),
                                   child: Row(

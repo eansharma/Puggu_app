@@ -32,1001 +32,570 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-<<<<<<< HEAD
         child: Scaffold(
-            body: Obx(() => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 11, vertical: 11),
-                      child: GestureDetector(
-=======
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 11),
-                child: GestureDetector(
+            body: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 11),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back_ios,
+              size: 18,
+            ),
+          ),
+        ),
+        Container(
+          width: Helper.getScreenWidth(context),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(.4),
+                  // blurRadius: 2.0,
+                  spreadRadius: 2.0,
+                  offset: const Offset(
+                    0.0,
+                    1.0,
+                  )),
+            ],
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    showFlexibleBottomSheet(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.0),
+                          topRight: Radius.circular(25.0),
+                        ),
+                      ),
+                      minHeight: 0,
+                      initHeight: 0.5,
+                      maxHeight: 1,
+                      context: context,
+                      builder: _buildBottomSheet,
+                      anchors: [0, 0.5, 1],
+                      isSafeArea: true,
+                    );
                   },
-                  child: const Icon(
-                    Icons.arrow_back_ios,
-                    size: 18,
-                  ),
-                ),
-              ),
-              Container(
-                width: Helper.getScreenWidth(context),
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(.4),
-                        // blurRadius: 2.0,
-                        spreadRadius: 2.0,
-                        offset: const Offset(
-                          0.0,
-                          1.0,
-                        )),
-                  ],
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      GestureDetector(
->>>>>>> 899afd1612db64bc138e9f420680ed980e35fdf5
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(
-                          Icons.arrow_back_ios,
-                          size: 18,
-                        ),
+                      const Text(
+                        'User Name',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
                       ),
-                    ),
-                    Container(
-                      width: Helper.getScreenWidth(context),
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(.4),
-                              // blurRadius: 2.0,
-                              spreadRadius: 2.0,
-                              offset: const Offset(
-                                0.0,
-                                1.0,
-                              )),
-                        ],
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 6),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showFlexibleBottomSheet(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(25.0),
-                                      topRight: Radius.circular(25.0),
-                                    ),
-                                  ),
-                                  minHeight: 0,
-                                  initHeight: 0.5,
-                                  maxHeight: 1,
-                                  context: context,
-                                  builder: _buildBottomSheet,
-                                  anchors: [0, 0.5, 1],
-                                  isSafeArea: true,
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'User Name',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black),
-                                  ),
-                                  const Spacer(),
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/profile.png'),
-                                            fit: BoxFit.cover)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-<<<<<<< HEAD
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const FevoriteList(
-                                                title: '',
-                                              )),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: const [
-                                      Icon(Icons.favorite_border_outlined),
-                                      Text(
-                                        'Favorites',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const MyAddress(
-                                                title: '',
-                                              )),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: const [
-                                      Icon(Icons.book),
-                                      Text(
-                                        'Address Book',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CustomerReview(
-                                                title: '',
-                                              )),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: const [
-                                      Icon(Icons.star_border_outlined),
-                                      Text(
-                                        'Your Rating',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const GooglePay(
-                                                title: '',
-                                              )),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: const [
-                                      Icon(Icons
-                                          .account_balance_wallet_outlined),
-                                      Text(
-                                        'Payment',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-=======
-                            const Spacer(),
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image:
-                                          AssetImage('assets/images/profile.png'),
-                                      fit: BoxFit.cover)),
->>>>>>> 899afd1612db64bc138e9f420680ed980e35fdf5
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: Helper.getScreenWidth(context),
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(.4),
-                              // blurRadius: 2.0,
-                              spreadRadius: 2.0,
-                              offset: const Offset(
-                                0.0,
-                                1.0,
-                              )),
-                        ],
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 6),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Order(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.shopping_bag,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'My Order',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Divider(
-                              color: PugauColors.GREY,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(ResetPassword(
-                                  title: '',
-                                ));
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.notification_important_sharp,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'How to Order',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ComplaintFeedback(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.feedback,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Complaint & Feedback',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MyFeedback(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.feedback,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Feedback',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const FAQ(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.message_rounded,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'FAQ',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AboutUs(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.help_center_outlined,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Help',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AboutUs(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.help,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Terms & Condition',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                _controller.fechData("About Us");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AboutUs(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.feedback_rounded,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'About US',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ChangePassword(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.lock,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Change Password',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 163, 163, 163),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const NoInternet(
-                                            title: '',
-                                          )),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.logout,
-                                      size: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-<<<<<<< HEAD
-                ))));
-=======
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Order(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.shopping_bag,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'My Order',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        color: PugauColors.GREY,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(ResetPassword(
-                            title: '',
-                          ));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.notification_important_sharp,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'How to Order',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ComplaintFeedback(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.feedback,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Complaint & Feedback',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyFeedback(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.feedback,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Feedback',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const FAQ(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.message_rounded,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'FAQ',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutUs(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.help_center_outlined,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Help',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutUs(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.help,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Terms & Condition',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutUs(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.feedback_rounded,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'About Us',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChangePassword(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.lock,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Change Password',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 163, 163, 163),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const NoInternet(
-                                      title: '',
-                                    )),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.logout,
-                                size: 20,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Logout',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
+                      const Spacer(),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AssetImage('assets/images/profile.png'),
+                                fit: BoxFit.cover)),
                       ),
                     ],
                   ),
                 ),
-              )
-            ],
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FevoriteList(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.favorite_border_outlined),
+                          Text(
+                            'Favorites',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MyAddress(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.book),
+                          Text(
+                            'Address Book',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CustomerReview(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.star_border_outlined),
+                          Text(
+                            'Your Rating',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const GooglePay(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: Column(
+                        children: const [
+                          Icon(Icons.account_balance_wallet_outlined),
+                          Text(
+                            'Payment',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
->>>>>>> 899afd1612db64bc138e9f420680ed980e35fdf5
+        const SizedBox(
+          height: 20,
+        ),
+        Container(
+          width: Helper.getScreenWidth(context),
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(.4),
+                  // blurRadius: 2.0,
+                  spreadRadius: 2.0,
+                  offset: const Offset(
+                    0.0,
+                    1.0,
+                  )),
+            ],
+            borderRadius: BorderRadius.circular(7),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Order(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.shopping_bag,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'My Order',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Divider(
+                  color: PugauColors.GREY,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(ResetPassword(
+                      title: '',
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.notification_important_sharp,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'How to Order',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ComplaintFeedback(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.feedback,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Complaint & Feedback',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyFeedback(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.feedback,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Feedback',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FAQ(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.message_rounded,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'FAQ',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutUs(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.help_center_outlined,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Help',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutUs(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.help,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Terms & Condition',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GetBuilder<WebController>(
+                  builder: (_controller) {
+                    return GestureDetector(
+                      onTap: () {
+                        _controller.fechData("About Us");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AboutUs(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.feedback_rounded,
+                              size: 20,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'About US',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ChangePassword(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.lock,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Change Password',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromARGB(255, 163, 163, 163),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NoInternet(
+                                title: '',
+                              )),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.logout,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    )));
   }
 
   Widget _buildBottomSheet(

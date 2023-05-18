@@ -112,8 +112,8 @@ class _EditNumberState extends State<EditNumber> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const VerifyOtp(
-                                      title: '',
+                                builder: (context) => VerifyOtp(
+                                      type: '',
                                     )),
                           );
                         }),

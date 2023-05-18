@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pugau/Users/Auth/Forget/reset_password.dart';
-import 'package:pugau/Users/Auth/select_city.dart';
+import 'package:pugau/Users/Controller/login_controller.dart';
+
+import 'package:pugau/util/theme/Pugau_theme_colors.dart';
+import 'package:pugau/widget/customSnakebar.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key, required String title});
@@ -10,11 +14,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController password = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Column(
+    return SafeArea(child:
+        Scaffold(body: GetBuilder<AuthController>(builder: (_contorller) {
+      return Column(
         children: [
           const SizedBox(
             height: 25,
@@ -74,7 +79,7 @@ class _LoginState extends State<Login> {
                         child: TextFormField(
                           keyboardType: TextInputType.text,
                           textAlign: TextAlign.start,
-                          //  controller: number,
+                          controller: password,
                           textAlignVertical: TextAlignVertical.center,
                           style: const TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w500),
@@ -108,15 +113,20 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(7),
                         ),
                         textColor: Colors.black,
-                        color: Colors.red,
+                        color: PugauColors.themeColor,
                         onPressed: (() {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SelectCity(
-                                      title: '',
-                                    )),
-                          );
+                          if (password.text.isEmpty) {
+                            showCustomSnackBar('Phone Is Empty', isError: true);
+                          } else {
+                            _contorller.Login_password(password.text);
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => const SelectCity(
+                          //             title: '',
+                          //           )),
+                          // );
                         }),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -137,27 +147,30 @@ class _LoginState extends State<Login> {
                     ),
                     Center(
                         child: GestureDetector(
-                          onTap: () {
-                              Navigator.push(
-                               context,
-                                MaterialPageRoute(builder: (context) => const ResetPassword (title: '',)),
-                                );
-                          },
-                          child: const Text(
-                                              'Forgot Your Password ?',
-                                              style: TextStyle(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResetPassword(
+                                    title: '',
+                                  )),
+                        );
+                      },
+                      child: const Text(
+                        'Forgot Your Password ?',
+                        style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: Colors.red),
-                                            ),
-                        )),
+                      ),
+                    )),
                   ],
                 ),
               ),
             ),
           )
         ],
-      ),
-    ));
+      );
+    })));
   }
 }

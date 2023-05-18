@@ -10,7 +10,9 @@ import 'package:pugau/Users/Controller/login_controller.dart';
 import '../../util/Helper/helper.dart';
 
 class VerifyOtp extends StatefulWidget {
-  const VerifyOtp({super.key, required String title});
+  String? type;
+  VerifyOtp({required this.type});
+  // const VerifyOtp({super.key, required String type});
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -92,9 +94,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   controller: otp,
                   onChanged: (value) {
                     if (otp.text.length == 6) {
-                      authController.Verify_OTP(otp.text);
-                    } else {
-                      // showCustomSnackBar("OTP is invalid !", isError: true);
+                      authController.Verify_OTP(otp.text, widget.type);
                     }
                   },
                   defaultPinTheme: PinTheme(
