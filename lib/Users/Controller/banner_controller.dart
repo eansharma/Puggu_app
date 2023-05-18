@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class BannerController extends GetxController {
-  bool isLoading = false;
   RxList<Map<String, dynamic>> genieData = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> martData = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> restaurantData = <Map<String, dynamic>>[].obs;
@@ -16,20 +15,15 @@ class BannerController extends GetxController {
   }
 
   void fetchData() async {
-    isLoading = true;
     try {
-      final response =
-          await http.get(Uri.parse('https://scsy.in/foodbazar/api/banner'));
+      final response = await http.get(Uri.parse('https://scsy.in/foodbazar/api/banner'));
       if (response.statusCode == 200) {
         final data = response.body;
         final parsedData = jsonDecode(data);
         if (parsedData['data'] != null) {
-          genieData.value =
-              List<Map<String, dynamic>>.from(parsedData['data']['genie']);
-          martData.value =
-              List<Map<String, dynamic>>.from(parsedData['data']['mart']);
-          restaurantData.value =
-              List<Map<String, dynamic>>.from(parsedData['data']['restaurant']);
+          genieData.value = List<Map<String, dynamic>>.from(parsedData['data']['genie']);
+          martData.value = List<Map<String, dynamic>>.from(parsedData['data']['mart']);
+          restaurantData.value = List<Map<String, dynamic>>.from(parsedData['data']['restaurant']);
         }
       } else {
         // Handle error
@@ -38,7 +32,5 @@ class BannerController extends GetxController {
       // Handle error
       print(e);
     }
-    update();
-    isLoading = false;
   }
 }

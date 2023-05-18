@@ -77,8 +77,8 @@ class Genie {
   String? updatedAt;
   int? cityId;
   String? bannerType;
-  Null column;
-  Null extraColumn;
+  Null? column;
+  Null? extraColumn;
 
   Genie(
       {this.id,
@@ -144,7 +144,7 @@ class Mart {
   String? title;
   String? image;
   int? rank;
-  Null link;
+  Null? link;
   String? location;
   String? city;
   String? duration;
@@ -154,8 +154,8 @@ class Mart {
   String? updatedAt;
   int? cityId;
   String? bannerType;
-  Null column;
-  Null extraColumn;
+  Null? column;
+  Null? extraColumn;
 
   Mart(
       {this.id,
@@ -221,7 +221,7 @@ class Restaurant {
   String? title;
   String? image;
   int? rank;
-  Null link;
+  Null? link;
   String? location;
   String? city;
   String? duration;
@@ -231,8 +231,8 @@ class Restaurant {
   String? updatedAt;
   int? cityId;
   String? bannerType;
-  Null column;
-  Null extraColumn;
+  Null? column;
+  Null? extraColumn;
 
   Restaurant(
       {this.id,

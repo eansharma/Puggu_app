@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:pugau/Users/Screens/Genie/genie_picup.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../Data/Api/API_URLs.dart';
 import '../../../util/Helper/helper.dart';
+import '../../Controller/banner_controller.dart';
 
 class Genie extends StatefulWidget {
   const Genie({super.key});
@@ -15,6 +18,8 @@ class Genie extends StatefulWidget {
 }
 
 class _GenieState extends State<Genie> {
+     final BannerController bannerController = Get.put(BannerController());
+
   int selectindex = 0;
   @override
   Widget build(BuildContext context) {
@@ -60,36 +65,59 @@ class _GenieState extends State<Genie> {
               const SizedBox(
                 height: 30,
               ),
-              CarouselSlider.builder(
-                itemCount: 4,
-                options: CarouselOptions(
-                    autoPlay: true,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        selectindex = index;
-                      });
-                    },
-                    height: Helper.getScreenHeight(context) / 3,
-                    initialPage: 0,
-                    aspectRatio: 2 / 4.2,
-                    viewportFraction: 1),
-                itemBuilder: (BuildContext context, int index, int realIndex) {
-                  return ClipRRect(
+ CarouselSlider.builder(
+          options: CarouselOptions(
+              autoPlay: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  selectindex = index;
+                });
+              },
+              height: 33.h,
+              viewportFraction: 0.99,
+              initialPage: 0,
+              aspectRatio: 2 / 4.2),
+          itemBuilder: (BuildContext context, int index, int realIndex) {
+
+           return GetBuilder<BannerController>(
+            // Define the bcontroller variable here
+            builder: (bcontroller){
+              return bcontroller.genieData.isEmpty
+               ? Center(
+                      child: CircularProgressIndicator(
+                        color: PugauColors.themeColor,
+                      ),
+                    )
+                  : ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: Image(
-                        image: const AssetImage('assets/images/genie.png'),
+                        image: NetworkImage(AppContent.BASE_URL +
+                            '/public/uploads/banner/' +
+                           bannerController.genieData[index]['image'].toString()),
                         fit: BoxFit.cover,
-                        width: Helper.getScreenWidth(context) / 1.05,
-                      ));
-                },
-              ),
+                        width: 94.5.w,
+                      ),
+                    );
+            }
+
+            );
+
+
+          },
+          itemCount: bannerController.genieData.length, // Use bannerController instead of bcontroller
+        ),
+       
+           
+           
+
+
               const SizedBox(
                 height: 10,
               ),
               PageViewDotIndicator(
                 size: const Size(8, 8),
                 currentItem: selectindex,
-                count: 4,
+                count: bannerController.genieData.length,
                 unselectedColor: Colors.black26,
                 selectedColor: PugauColors.themeColor,
                 duration: const Duration(milliseconds: 200),
