@@ -595,13 +595,13 @@ class _MartState extends State<Mart> {
                           ),
                         ],
                       ),
-                       SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
-                       Divider(
+                      Divider(
                         thickness: 1,
                       ),
-                       Text(
+                      Text(
                         'Offer term and condition',
                         style: TextStyle(
                             fontSize: 10,

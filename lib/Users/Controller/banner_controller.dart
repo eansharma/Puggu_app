@@ -1,39 +1,44 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:pugau/Data/Api/API_URLs.dart';
-
-import '../../Data/Model/banner_model.dart';
 
 class BannerController extends GetxController {
-  var myBanner = <Data>[].obs;
+  bool isLoading = false;
+  RxList<Map<String, dynamic>> genieData = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> martData = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> restaurantData = <Map<String, dynamic>>[].obs;
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    fetchData();
     super.onInit();
-
-    fetchBanner();
   }
 
-  Future<void> fetchBanner() async {
+  void fetchData() async {
+    isLoading = true;
     try {
-      var response =
-          await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
-
+      final response =
+          await http.get(Uri.parse('https://scsy.in/foodbazar/api/banner'));
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        BannerModel bannerModel = BannerModel.fromJson(jsonResponse);
-        myBanner.value = bannerModel.data ?? [];
-        update();
-        print(myBanner);
+        final data = response.body;
+        final parsedData = jsonDecode(data);
+        if (parsedData['data'] != null) {
+          genieData.value =
+              List<Map<String, dynamic>>.from(parsedData['data']['genie']);
+          martData.value =
+              List<Map<String, dynamic>>.from(parsedData['data']['mart']);
+          restaurantData.value =
+              List<Map<String, dynamic>>.from(parsedData['data']['restaurant']);
+        }
       } else {
-        print(response.reasonPhrase);
+        // Handle error
       }
     } catch (e) {
-      print(e.toString());
+      // Handle error
+      print(e);
     }
+    update();
+    isLoading = false;
   }
 }
