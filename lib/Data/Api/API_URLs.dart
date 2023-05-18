@@ -16,4 +16,6 @@ class AppContent {
   static String SET_NEW_PASSWORD = '/api/set-new-password';
   static String WEB_PAGE = '/api/fetch-website-page';
   static String CATEGORY_PAGE ='/api/menu';
+  static String RESTAURENT_PAGE ='/api/restaurent';
+  
 }

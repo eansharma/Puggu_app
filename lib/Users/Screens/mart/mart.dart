@@ -375,7 +375,8 @@ class _MartState extends State<Mart> {
                     width: 70,
                     decoration:  BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage('${_categoryController.categoryList[index].image}'),
+                        image: NetworkImage(AppContent.BASE_URL +
+                            '/public/uploads/menu/' +'${_categoryController.categoryList[index].image}'),
                         fit: BoxFit.cover,
                       ),
                     ),
