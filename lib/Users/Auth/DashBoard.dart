@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pugau/Users/Screens/Notification/_notification.dart';
 import 'package:pugau/Users/Screens/mart/mart.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
-
-import '../Controller/banner_controller.dart';
 import '../Screens/favorite_list.dart';
 import '../Screens/Genie/genie.dart';
 import '../Screens/Home_Screen.dart';
@@ -19,9 +16,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int pageIndex = 0;
-
-
-
 
   final pages = [
     Food(title: Text('')),

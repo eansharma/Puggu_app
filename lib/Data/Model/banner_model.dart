@@ -1,4 +1,3 @@
-
 class Banner_model {
   String? message;
   Data? data;
