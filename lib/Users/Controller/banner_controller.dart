@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../Data/Api/API_URLs.dart';
+
 class BannerController extends GetxController {
   RxList<Map<String, dynamic>> genieData = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> martData = <Map<String, dynamic>>[].obs;
@@ -14,9 +16,9 @@ class BannerController extends GetxController {
     super.onInit();
   }
 
-  void fetchData() async {
+  void fetchData( ) async {
     try {
-      final response = await http.get(Uri.parse('https://scsy.in/foodbazar/api/banner'));
+      final response = await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
       if (response.statusCode == 200) {
         final data = response.body;
         final parsedData = jsonDecode(data);
