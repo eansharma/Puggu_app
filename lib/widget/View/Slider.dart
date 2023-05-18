@@ -16,7 +16,7 @@ class Slider_Screen extends StatefulWidget {
 }
 
 class _Slider_ScreenState extends State<Slider_Screen> {
-  final BannerController bannerController = Get.put(BannerController());
+  final BannerController bcontroller = Get.put(BannerController());
 
   int selectindex = 0;
 
@@ -39,12 +39,9 @@ class _Slider_ScreenState extends State<Slider_Screen> {
               initialPage: 0,
               aspectRatio: 2 / 4.2),
           itemBuilder: (BuildContext context, int index, int realIndex) {
-
-           return GetBuilder<BannerController>(
-            // Define the bcontroller variable here
-            builder: (bcontroller){
+            return Obx(() {
               return bcontroller.restaurantData.isEmpty
-               ? Center(
+                  ? Center(
                       child: CircularProgressIndicator(
                         color: PugauColors.themeColor,
                       ),
@@ -54,29 +51,24 @@ class _Slider_ScreenState extends State<Slider_Screen> {
                       child: Image(
                         image: NetworkImage(AppContent.BASE_URL +
                             '/public/uploads/banner/' +
-                           bannerController.restaurantData[index]['image'].toString()),
+                            bcontroller.restaurantData[index]['image']
+                                .toString()),
                         fit: BoxFit.cover,
                         width: 94.5.w,
                       ),
                     );
-            }
-
-            );
-
-
+            });
           },
-          itemCount: bannerController.restaurantData.length, // Use bannerController instead of bcontroller
+          itemCount: bcontroller.restaurantData
+              .length, // Use bannerController instead of bcontroller
         ),
-       
-       
-       
         SizedBox(
           height: 3.h,
         ),
         PageViewDotIndicator(
           size: Size(8, 8),
           currentItem: selectindex,
-          count:bannerController.genieData.length ,
+          count: bcontroller.genieData.length,
           unselectedColor: Colors.black26,
           selectedColor: Colors.red,
           duration: Duration(milliseconds: 200),
