@@ -43,7 +43,7 @@ class _Slider_ScreenState extends State<Slider_Screen> {
            return GetBuilder<BannerController>(
             // Define the bcontroller variable here
             builder: (bcontroller){
-              return bcontroller.genieData.isEmpty
+              return bcontroller.restaurantData.isEmpty
                ? Center(
                       child: CircularProgressIndicator(
                         color: PugauColors.themeColor,
@@ -54,7 +54,7 @@ class _Slider_ScreenState extends State<Slider_Screen> {
                       child: Image(
                         image: NetworkImage(AppContent.BASE_URL +
                             '/public/uploads/banner/' +
-                           bannerController.genieData[index]['image'].toString()),
+                           bannerController.restaurantData[index]['image'].toString()),
                         fit: BoxFit.cover,
                         width: 94.5.w,
                       ),
@@ -65,15 +65,18 @@ class _Slider_ScreenState extends State<Slider_Screen> {
 
 
           },
-          itemCount: bannerController.genieData.length, // Use bannerController instead of bcontroller
+          itemCount: bannerController.restaurantData.length, // Use bannerController instead of bcontroller
         ),
+       
+       
+       
         SizedBox(
           height: 3.h,
         ),
         PageViewDotIndicator(
           size: Size(8, 8),
           currentItem: selectindex,
-          count: 4,
+          count:bannerController.genieData.length ,
           unselectedColor: Colors.black26,
           selectedColor: Colors.red,
           duration: Duration(milliseconds: 200),

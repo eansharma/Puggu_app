@@ -1,10 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:pugau/Users/Screens/product_listing.dart';
 import 'package:pugau/util/theme/Pugau_images.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../Data/Api/API_URLs.dart';
 import '../../../util/Helper/helper.dart';
+import '../../../util/theme/Pugau_theme_colors.dart';
+import '../../Controller/banner_controller.dart';
 import '../Search/mart_search.dart';
 
 class Mart extends StatefulWidget {
@@ -15,6 +20,7 @@ class Mart extends StatefulWidget {
 }
 
 class _MartState extends State<Mart> {
+  final BannerController bannerController = Get.put(BannerController());
   int selectindex = 0;
   int _selectindex = 0;
   @override
@@ -184,35 +190,57 @@ class _MartState extends State<Mart> {
               height: 11,
             ),
             CarouselSlider.builder(
-              options: CarouselOptions(
-                  autoPlay: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      selectindex = index;
-                    });
-                  },
-                  height: Helper.getScreenHeight(context) / 3,
-                  viewportFraction: 0.99,
-                  initialPage: 0,
-                  aspectRatio: 2 / 4.2),
-              itemBuilder: (BuildContext context, int index, int realIndex) {
-                return ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image(
-                      image: AssetImage(Pugau_Images.Slider_Image_Mart),
-                      fit: BoxFit.cover,
-                      width: Helper.getScreenWidth(context) / 1.055,
-                    ));
+          options: CarouselOptions(
+              autoPlay: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  selectindex = index;
+                });
               },
-              itemCount: 4,
-            ),
+              height: 33.h,
+              viewportFraction: 0.99,
+              initialPage: 0,
+              aspectRatio: 2 / 4.2),
+          itemBuilder: (BuildContext context, int index, int realIndex) {
+
+           return GetBuilder<BannerController>(
+            // Define the bcontroller variable here
+            builder: (bcontroller){
+              return bcontroller.martData.isEmpty
+               ? Center(
+                      child: CircularProgressIndicator(
+                        color: PugauColors.themeColor,
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: Image(
+                        image: NetworkImage(AppContent.BASE_URL +
+                            '/public/uploads/banner/' +
+                           bannerController.martData[index]['image'].toString()),
+                        fit: BoxFit.cover,
+                        width: 94.5.w,
+                      ),
+                    );
+            }
+
+            );
+
+
+          },
+          itemCount: bannerController.martData.length, // Use bannerController instead of bcontroller
+        ),
+       
+           
+           
+           
             const SizedBox(
               height: 10,
             ),
             PageViewDotIndicator(
               size: const Size(8, 8),
               currentItem: selectindex,
-              count: 4,
+              count: bannerController.martData.length,
               unselectedColor: Colors.black26,
               selectedColor: Colors.red,
               duration: const Duration(milliseconds: 200),

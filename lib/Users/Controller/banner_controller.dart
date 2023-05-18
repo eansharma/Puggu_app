@@ -30,6 +30,7 @@ class BannerController extends GetxController {
       }
     } catch (e) {
       // Handle error
+      print(e);
     }
   }
 }
