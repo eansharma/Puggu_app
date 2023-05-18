@@ -15,12 +15,8 @@ class AppContent {
   static String RESET_PASSWORD = '/api/reset-password';
   static String SET_NEW_PASSWORD = '/api/set-new-password';
   static String WEB_PAGE = '/api/fetch-website-page';
-<<<<<<< HEAD
-  static String CATEGORY_PAGE ='/api/menu';
-  static String RESTAURENT_PAGE ='/api/restaurent';
-  
-=======
   static String RESTAURANT = '/api/fetch-website-page';
   static String LOGIN = '/api/login-by-password';
->>>>>>> ead0cc5d880215dcc33d3f672eaf2b9eb1fd6294
+  static String RESTAURENT_URL ='/api/restaurent';
+  static String CATEGORY_URL ='/api/menu';
 }

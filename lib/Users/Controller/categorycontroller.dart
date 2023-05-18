@@ -21,7 +21,7 @@ class CategoryController extends GetxController {
   Future<void> categoryData() async {
     try {
       isLoading(true);
-      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_PAGE));
+      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
 
       http.StreamedResponse response = await request.send();
 

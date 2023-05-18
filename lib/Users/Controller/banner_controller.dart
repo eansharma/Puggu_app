@@ -19,13 +19,7 @@ class BannerController extends GetxController {
 
   void fetchData( ) async {
     try {
-<<<<<<< HEAD
       final response = await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
-=======
-      final response =
-          await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
-      update();
->>>>>>> ead0cc5d880215dcc33d3f672eaf2b9eb1fd6294
       if (response.statusCode == 200) {
         final data = response.body;
         final parsedData = jsonDecode(data);

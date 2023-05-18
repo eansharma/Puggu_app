@@ -18,7 +18,7 @@ class RestaurentControlleer extends GetxController {
 
   Future restaurentData() async{
     try{
-      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL+ AppContent.RESTAURENT_PAGE));
+      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL+ AppContent.RESTAURENT_URL));
 
 
           http.StreamedResponse response = await request.send();
