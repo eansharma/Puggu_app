@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
+import 'package:pugau/Users/Controller/city_controller.dart';
 import 'package:pugau/Users/Screens/add_more_details.dart';
 import 'package:pugau/util/Helper/helper.dart';
 
@@ -76,11 +79,13 @@ class _SelectLocationState extends State<SelectLocation> {
             ),
           ],
             ),
-              child: Card(
+              child: GetBuilder<CityController>(builder: (SelectCity){
+
+                return Card(
                 child: 
                 SizedBox(
                   height: Helper.getScreenHeight(context)/2.1,
-                  child: GridView.builder(itemCount: 4,
+                  child: GridView.builder(itemCount: SelectCity.CityList.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 2/1.87), 
                     itemBuilder: (Context,index){
                     return
@@ -108,9 +113,15 @@ class _SelectLocationState extends State<SelectLocation> {
                               Container(
                                 width: 104,
                                 height: 98,
-                                decoration: const BoxDecoration(
+                                decoration:  BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: DecorationImage(image: AssetImage('assets/images/cityimage.png'),fit: BoxFit.cover)
+                                  image: DecorationImage(
+                                    image: NetworkImage(AppContent.BASE_URL+'/public/uploads/city/' +
+                                              '${SelectCity.CityList[index].image}'),
+                                              fit: BoxFit.cover,
+                                    
+                                    )
+                    
                                 ),
                               ),
                               const SizedBox(height: 5,),
@@ -121,7 +132,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                   borderRadius: BorderRadius.circular(6),
                                   color: const Color.fromARGB(255, 85, 27, 247),
                                 ),
-                                child: const Center(child: Text('KOLKATA',style: TextStyle(fontSize: 10.21,fontWeight: FontWeight.w600,color: Colors.white),)),
+                                child:  Center(child: Text("${SelectCity.CityList[index].name}",style: TextStyle(fontSize: 10.21,fontWeight: FontWeight.w600,color: Colors.white),)),
                               ),
                                const SizedBox(height: 9,),
                             ],
@@ -130,9 +141,17 @@ class _SelectLocationState extends State<SelectLocation> {
                       ),
                     ),
                   );
+                  
+                  
                    }),
                 ),
-              ),
+              );
+          
+          
+
+              })
+          
+          
             )
                   ],
                 );

@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pugau/Data/Api/API_URLs.dart';
 
+import '../../Data/Api/API_URLs.dart';
+
 class BannerController extends GetxController {
   RxList<Map<String, dynamic>> genieData = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> martData = <Map<String, dynamic>>[].obs;
@@ -11,15 +13,13 @@ class BannerController extends GetxController {
 
   @override
   void onInit() {
-    fetchBannerData();
+    fetchData();
     super.onInit();
   }
 
-  void fetchBannerData() async {
+  void fetchData( ) async {
     try {
-      final response =
-          await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
-      update();
+      final response = await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
       if (response.statusCode == 200) {
         final data = response.body;
         final parsedData = jsonDecode(data);
@@ -41,6 +41,4 @@ class BannerController extends GetxController {
       print(e);
     }
   }
-
-  
 }

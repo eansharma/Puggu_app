@@ -247,7 +247,9 @@ class _SelectCityState extends State<SelectCity> {
                                                   .BASE_URL +
                                               '/public/uploads/city/' +
                                               '${_cityController.CityList[index].image}'),
-                                          fit: BoxFit.cover)),
+                                          fit: BoxFit.cover
+                                          )
+                                          ),
                                 ),
                                 SizedBox(
                                   height: 8.px,

@@ -16,6 +16,7 @@ class CityController extends GetxController {
   void onInit() {
     super.onInit();
     CityName();
+    
   }
     
     // Select
@@ -45,6 +46,13 @@ class CityController extends GetxController {
       _isLoading(false); // Set isLoading to false
     }
   }
+
+   
+
+
+
+
+
 }
 
   
