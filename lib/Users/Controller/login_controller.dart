@@ -37,8 +37,8 @@ class AuthController extends GetxController implements GetxService {
           phone: phone,
         ));
       } else {
-        _setValue(res['user']['id'].toString());
         Get.to(Login());
+        _setValue(res['data'][0]['id'].toString());
       }
       showCustomSnackBar(res['message'].toString(), isError: false);
     } else {
