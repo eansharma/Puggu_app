@@ -108,7 +108,7 @@ class Data {
     name = json['name'];
     address = json['address'];
     phone = null;
-    keyword = null;
+    keyword = json['keyword'];
     rank = null;
     tags = null;
     storeStatus = json['store_status'];

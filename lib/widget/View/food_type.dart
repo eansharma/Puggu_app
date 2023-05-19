@@ -226,7 +226,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'The Burger House',
+                        '${rscontroller.restaurentList[index].name}',
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
@@ -243,9 +243,9 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
+                          children:  [
                             Text(
-                              '4.5',
+                              '${rscontroller.restaurentList[index].rank}',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
@@ -274,39 +274,39 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
-                    children: const [
+                    children:  [
                       Text(
-                        'Fast food ',
+                        '${rscontroller.restaurentList[index].keyword}',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                         ),
                       ),
-                      Icon(
-                        Icons.circle,
-                        size: 7,
-                      ),
-                      Text(
-                        ' Desserts ',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Icon(
-                        Icons.circle,
-                        size: 7,
-                      ),
-                      Text(
-                        ' Beverages',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
+                      // Icon(
+                      //   Icons.circle,
+                      //   size: 7,
+                      // ),
+                      // Text(
+                      //   ' Desserts ',
+                      //   style: TextStyle(
+                      //     fontSize: 12,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: Colors.black,
+                      //   ),
+                      // ),
+                      // Icon(
+                      //   Icons.circle,
+                      //   size: 7,
+                      // ),
+                      // Text(
+                      //   ' Beverages',
+                      //   style: TextStyle(
+                      //     fontSize: 12,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: Colors.black,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -327,7 +327,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                             vertical: 8,
                           ),
                           child: Text(
-                            'BESTSELLER',
+                            '${rscontroller.restaurentList[index].tags}',
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
@@ -392,7 +392,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                             vertical: 8,
                             horizontal: 8,
                           ),
-                          child: Text(
+                          child:  Text(
                             '${rscontroller.restaurentList[index].storeStatus}',
                             style: TextStyle(
                               fontSize: 10,

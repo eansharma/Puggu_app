@@ -19,4 +19,5 @@ class AppContent {
   static String LOGIN = '/api/login-by-password';
   static String RESTAURENT_URL ='/api/restaurent';
   static String CATEGORY_URL ='/api/menu';
+  static String SUB_MENU_URL ='/api/submenu/40';
 }
