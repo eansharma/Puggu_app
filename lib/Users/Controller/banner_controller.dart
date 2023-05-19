@@ -11,11 +11,11 @@ class BannerController extends GetxController {
 
   @override
   void onInit() {
-    fetchData();
+    fetchBannerData();
     super.onInit();
   }
 
-  void fetchData() async {
+  void fetchBannerData() async {
     try {
       final response =
           await http.get(Uri.parse(AppContent.BASE_URL + AppContent.BANNER));
@@ -41,4 +41,6 @@ class BannerController extends GetxController {
       print(e);
     }
   }
+
+  
 }

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:pugau/Users/Controller/coopan_controller.dart';
 import 'package:pugau/Users/Screens/product_listing.dart';
 import 'package:pugau/util/theme/Pugau_images.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -21,6 +22,7 @@ class Mart extends StatefulWidget {
 
 class _MartState extends State<Mart> {
   final BannerController bannerController = Get.put(BannerController());
+  final CoopanController coopanController = Get.put(CoopanController());
   int selectindex = 0;
   int _selectindex = 0;
   @override
@@ -100,140 +102,149 @@ class _MartState extends State<Mart> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              child: GestureDetector(
-                onTap: () {
-                  _coupon();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: const Color(0xff1ffe2020),
-                      border: Border.all(width: 1, color: Colors.red)),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: Helper.getScreenWidth(context) / 1.4,
-                          child: CarouselSlider(
-                              options: CarouselOptions(
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    _selectindex = index;
-                                  });
-                                },
-                                height: 25,
-                                viewportFraction: 0.99,
-                                initialPage: 0,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                child: Obx(() {
+                  return coopanController.coopanData.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(
+                              color: PugauColors.themeColor))
+                      : GestureDetector(
+                          onTap: () {
+                            _coupon();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: const Color(0xff1ffe2020),
+                                border:
+                                    Border.all(width: 1, color: Colors.red)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 7, vertical: 7),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: Helper.getScreenWidth(context) / 1.4,
+                                    child: CarouselSlider.builder(
+                                      options: CarouselOptions(
+                                        onPageChanged: (index, reason) {
+                                          setState(() {
+                                            _selectindex = index;
+                                          });
+                                        },
+                                        height: 25,
+                                        viewportFraction: 0.99,
+                                        initialPage: 0,
+                                      ),
+                                      itemBuilder: (BuildContext context,
+                                          int index, int realIndex) {
+                                        return Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              '%',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.red),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '50% off upto  \$ ${coopanController.coopanData[index].amount} ',
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.red),
+                                                ),
+                                                Text(
+                                                  'Use Coupon ${coopanController.coopanData[index].coupancode.toString()}',
+                                                  // 'Use Coupon SUPER MART',
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.black),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                      itemCount:
+                                          coopanController.coopanData.length,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: Helper.getScreenWidth(context) / 7.5,
+                                    child: PageViewDotIndicator(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 0.5),
+                                      size: const Size(6, 6),
+                                      currentItem: _selectindex,
+                                      count: coopanController.coopanData.length,
+                                      unselectedColor: Colors.black26,
+                                      selectedColor: Colors.red,
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      boxShape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              items: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      '%',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.red),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: const [
-                                        Text(
-                                          '50% off upto \$125',
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.red),
-                                        ),
-                                        Text(
-                                          'Use Coupon SUPER MART',
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ]),
-                        ),
-                        SizedBox(
-                          width: Helper.getScreenWidth(context) / 7.5,
-                          child: PageViewDotIndicator(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 0.5),
-                            size: const Size(6, 6),
-                            currentItem: _selectindex,
-                            count: 4,
-                            unselectedColor: Colors.black26,
-                            selectedColor: Colors.red,
-                            duration: const Duration(milliseconds: 200),
-                            boxShape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                        );
+                })),
             const SizedBox(
               height: 11,
             ),
             CarouselSlider.builder(
-          options: CarouselOptions(
-              autoPlay: true,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  selectindex = index;
+              options: CarouselOptions(
+                  autoPlay: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      selectindex = index;
+                    });
+                  },
+                  height: 33.h,
+                  viewportFraction: 0.99,
+                  initialPage: 0,
+                  aspectRatio: 2 / 4.2),
+              itemBuilder: (BuildContext context, int index, int realIndex) {
+                return GetBuilder<BannerController>(
+                    // Define the bcontroller variable here
+                    builder: (bcontroller) {
+                  return bcontroller.martData.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: PugauColors.themeColor,
+                          ),
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image(
+                            image: NetworkImage(AppContent.BASE_URL +
+                                '/public/uploads/banner/' +
+                                bannerController.martData[index]['image']
+                                    .toString()),
+                            fit: BoxFit.cover,
+                            width: 94.5.w,
+                          ),
+                        );
                 });
               },
-              height: 33.h,
-              viewportFraction: 0.99,
-              initialPage: 0,
-              aspectRatio: 2 / 4.2),
-          itemBuilder: (BuildContext context, int index, int realIndex) {
-
-           return GetBuilder<BannerController>(
-            // Define the bcontroller variable here
-            builder: (bcontroller){
-              return bcontroller.martData.isEmpty
-               ? Center(
-                      child: CircularProgressIndicator(
-                        color: PugauColors.themeColor,
-                      ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image(
-                        image: NetworkImage(AppContent.BASE_URL +
-                            '/public/uploads/banner/' +
-                           bannerController.martData[index]['image'].toString()),
-                        fit: BoxFit.cover,
-                        width: 94.5.w,
-                      ),
-                    );
-            }
-
-            );
-
-
-          },
-          itemCount: bannerController.martData.length, // Use bannerController instead of bcontroller
-        ),
-       
-           
-           
-           
+              itemCount: bannerController.martData
+                  .length, // Use bannerController instead of bcontroller
+            ),
             const SizedBox(
               height: 10,
             ),
