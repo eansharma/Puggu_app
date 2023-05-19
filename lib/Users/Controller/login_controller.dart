@@ -7,7 +7,6 @@ import 'package:pugau/Users/Auth/login.dart';
 import 'package:pugau/Users/Auth/set_name_password.dart';
 import 'package:pugau/Users/Auth/verify_otp.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
-import 'package:pugau/Users/Screens/Home_Screen.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,12 +26,20 @@ class AuthController extends GetxController implements GetxService {
     update();
     final response = await http.post(
         Uri.parse(AppContent.BASE_URL + AppContent.OTP_GENRATION_URL),
-        body: {'phone': phone});
+        body: {'phone_no': phone});
     var res = jsonDecode(response.body);
-    _setValue(res['user']['id'].toString());
+
     print(res);
-    if (res['code'] == 200) {
-      Get.to(VerifyOtp(type: 'LOGIN'));
+    if (res['success'] == true) {
+      if (res['type'] == "Register") {
+        Get.to(VerifyOtp(
+          type: 'LOGIN',
+          phone: phone,
+        ));
+      } else {
+        _setValue(res['user']['id'].toString());
+        Get.to(Login());
+      }
       showCustomSnackBar(res['message'].toString(), isError: false);
     } else {
       showCustomSnackBar(res['message'].toString(), isError: true);
@@ -42,20 +49,20 @@ class AuthController extends GetxController implements GetxService {
   }
 
 // for Verify Otp
-  Future<void> Verify_OTP(String otp, type) async {
+  Future<void> Verify_OTP(String otp, type, phone) async {
     isLoading = true;
     update();
-    final pref = await SharedPreferences.getInstance();
-    var userid = pref.getString('user_id');
+
     final response = await http
         .post(Uri.parse(AppContent.BASE_URL + AppContent.VERIFY_OTP), body: {
       'otp': otp,
-      'user_id': userid.toString(),
+      'phone_no': phone,
       'type': type.toString(),
     });
     var res = jsonDecode(response.body);
     print(res.toString() + "hiiii");
     if (res['success'] == true) {
+      _setValue(res['user']['id'].toString());
       if (res['type'] == "LOGIN") {
         showCustomSnackBar(res['message'].toString(), isError: false);
         Get.to(SetNamePassword(
@@ -105,9 +112,7 @@ class AuthController extends GetxController implements GetxService {
     if (res['success'] == true) {
       showCustomSnackBar(res['message'].toString(), isError: false);
       print(userId);
-      Get.to(Login(
-        title: '',
-      ));
+      Get.to(Login());
     } else {
       showCustomSnackBar(res['message'].toString(), isError: true);
     }
@@ -172,6 +177,7 @@ class AuthController extends GetxController implements GetxService {
     if (res['success'] == true) {
       Get.to(VerifyOtp(
         type: 'RESET',
+        phone: phone_no,
       ));
       showCustomSnackBar(res['message'].toString(), isError: false);
     } else {

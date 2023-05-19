@@ -11,8 +11,9 @@ import '../../util/Helper/helper.dart';
 
 class VerifyOtp extends StatefulWidget {
   String? type;
-  VerifyOtp({required this.type});
-  // const VerifyOtp({super.key, required String type});
+  String? phone;
+  VerifyOtp({required this.type,required this.phone});
+  //  VerifyOtp({super.key, required String type,required String phone});
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -94,7 +95,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   controller: otp,
                   onChanged: (value) {
                     if (otp.text.length == 6) {
-                      authController.Verify_OTP(otp.text, widget.type);
+                      authController.Verify_OTP(otp.text, widget.type,widget.phone);
                     }
                   },
                   defaultPinTheme: PinTheme(

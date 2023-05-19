@@ -7,7 +7,7 @@ import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key, required String title});
+  const Login({super.key,});
 
   @override
   State<Login> createState() => _LoginState();

@@ -113,7 +113,7 @@ class _EditNumberState extends State<EditNumber> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => VerifyOtp(
-                                      type: '',
+                                      type: '',phone: "",
                                     )),
                           );
                         }),

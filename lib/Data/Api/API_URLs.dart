@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class AppContent {
   static String BASE_URL = 'https://scsy.in/foodbazar';
-  static String OTP_GENRATION_URL = '/api/otp/generate';
+  static String OTP_GENRATION_URL = '/api/generate-otp';
   static String SELECT_CITY_IMAGE = '/api/cities';
   static String FOOD_TYPE = '/api/foodtype';
-  static String VERIFY_OTP = '/api/verify-otp';
+  static String VERIFY_OTP = '/api/verify-login-otp';
   static String RESET_PASS = '/api/reset-password';
   static String CHANGE_PASS = '/api/change-password';
   static String REGISTER_USER = '/api/profile-update';
