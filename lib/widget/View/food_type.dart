@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pugau/Users/Controller/restaurant_controller.dart';
 import 'package:pugau/Users/Screens/Restaurants/restaurent_datails.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
@@ -14,8 +13,6 @@ class Food_Type_List extends StatefulWidget {
 }
 
 class _Food_Type_ListState extends State<Food_Type_List> {
-  final RestaurantController _controller = Get.put(RestaurantController());
-
   bool _isFavorite = false;
   @override
   Widget build(BuildContext context) {
