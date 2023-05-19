@@ -7,7 +7,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../Data/Api/API_URLs.dart';
 import '../../Users/Controller/banner_controller.dart';
-import '../../util/theme/Pugau_theme_colors.dart';
 
 class Slider_Screen extends StatefulWidget {
   const Slider_Screen({Key? key});
@@ -31,7 +30,6 @@ class _Slider_ScreenState extends State<Slider_Screen> {
               child: ClipRRect(
               borderRadius: BorderRadius.circular(5),
               child: Image(
-                // Aditya
                 image: AssetImage(Pugau_Images.Slider_Image),
                 fit: BoxFit.cover,
                 width: 94.5.w,
