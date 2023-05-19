@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:pugau/Users/Screens/Restaurants/restaurent_datails.dart';
 import 'package:pugau/util/Helper/helper.dart';
@@ -6,6 +7,7 @@ import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../Users/Controller/restaurentcontroller.dart';
+
 
 class Food_Type_List extends StatefulWidget {
   const Food_Type_List({super.key});
@@ -16,14 +18,15 @@ class Food_Type_List extends StatefulWidget {
 
 class _Food_Type_ListState extends State<Food_Type_List> {
 
-//  final RestaurentControlleer _restaurentControlleer = Get.put(Ge)
+ 
+   final RestaurentController rscontroller = Get.put(RestaurentController());
+
 
   bool _isFavorite = false;
   @override
   Widget build(BuildContext context) {
-    return 
-    
-    GestureDetector(
+    return  Obx(() {
+      return  GestureDetector(
       onTap: () {
         Navigator.push(
           context,
@@ -36,8 +39,12 @@ class _Food_Type_ListState extends State<Food_Type_List> {
       child:ListView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-      itemCount: 5,
+        
+      itemCount:rscontroller.restaurentList.length,
+
       itemBuilder: (context, index) {
+        var restaurant = rscontroller.restaurentList[index];
+        
         return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
       width: Helper.getScreenWidth(context),
@@ -58,8 +65,9 @@ class _Food_Type_ListState extends State<Food_Type_List> {
           SizedBox(
             height: 20,
             child: Center(
-              child: Text(
-                'PURE VEG RESTAURANT',
+              
+            child: Text('${ rscontroller.restaurentList[index].name}'
+                ,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -171,7 +179,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Row(
-                          children: const [
+                          children:  [
                             SizedBox(width: 3),
                             Icon(
                               Icons.alarm,
@@ -180,7 +188,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                             ),
                             SizedBox(width: 3),
                             Text(
-                              '30 min | 2 km',
+                              '${rscontroller.restaurentList[index].timing}',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
@@ -385,7 +393,7 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                             horizontal: 8,
                           ),
                           child: Text(
-                            'OPEN NOW',
+                            '${rscontroller.restaurentList[index].storeStatus}',
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
@@ -409,18 +417,14 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Row(
-                      children: const [
-                        SizedBox(width: 10),
-                        Text(
-                          'Best burger in town',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: PugauColors.textColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                              children: [
+                                SizedBox(width: 10),
+                                Text('${rscontroller.restaurentList[index].description}')
+                              ],
+                            ),
+
+               
+               
                   ),
                 ),
               ],
@@ -436,5 +440,11 @@ class _Food_Type_ListState extends State<Food_Type_List> {
     );
 
 
+    });
+    
+   
   }
+
+
+
 }
