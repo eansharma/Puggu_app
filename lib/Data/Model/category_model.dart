@@ -39,7 +39,7 @@ class Data {
   Null? type;
   String? image;
   Null? tags;
-  Null? offer;
+  String? offer;
   Null? col;
   Null? stockStatus;
   Null? stockOpen;

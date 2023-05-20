@@ -32,7 +32,7 @@ class RestaurentController extends GetxController {
         if (restaurentModel.data != null) {
           restaurentList.assignAll(restaurentModel.data!);
         }
-        print(restaurentList);
+        // print(restaurentList);
         isLoading.value = false;
       }
     } catch (e) {

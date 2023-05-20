@@ -38,4 +38,6 @@ class WebController extends GetxController {
     update();
     return list;
   }
+
+  
 }

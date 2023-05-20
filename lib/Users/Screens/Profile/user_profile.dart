@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:pugau/Users/Auth/Forget/set_new_password.dart';
+import 'package:pugau/Users/Controller/login_controller.dart';
 import 'package:pugau/Users/Screens/review/Widget/aboutus.dart';
 import 'package:pugau/Users/Screens/review/Widget/complaint_feedback.dart';
 import 'package:pugau/Users/Screens/review/customer_review.dart';
@@ -13,6 +14,7 @@ import 'package:pugau/Users/Screens/no_internet_connection.dart';
 import 'package:pugau/Users/Screens/Order/order.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
+import 'package:pugau/widget/customSnakebar.dart';
 
 import '../../Auth/Forget/change_password.dart';
 import '../../Auth/Forget/reset_password.dart';
@@ -29,6 +31,8 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   final WebController _controller = Get.put(WebController());
+  final TextEditingController name = TextEditingController();
+  final TextEditingController number = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -603,7 +607,9 @@ class _UserProfileState extends State<UserProfile> {
     ScrollController scrollController,
     double bottomSheetOffset,
   ) {
-    return Material(
+    return GetBuilder<AuthController>(builder: (_authController)
+    {
+      return Material(
       child: Container(
         child: ListView(
           controller: scrollController,
@@ -682,7 +688,7 @@ class _UserProfileState extends State<UserProfile> {
                                 child: TextFormField(
                                   keyboardType: TextInputType.text,
                                   textAlign: TextAlign.start,
-                                  //  controller: number,
+                                   controller: name,
                                   textAlignVertical: TextAlignVertical.bottom,
                                   style: const TextStyle(
                                       fontSize: 11,
@@ -730,7 +736,7 @@ class _UserProfileState extends State<UserProfile> {
                                 child: TextFormField(
                                   keyboardType: TextInputType.text,
                                   textAlign: TextAlign.start,
-                                  //  controller: number,
+                                   controller: number,
                                   textAlignVertical: TextAlignVertical.bottom,
                                   style: const TextStyle(
                                       fontSize: 11,
@@ -778,6 +784,21 @@ class _UserProfileState extends State<UserProfile> {
                             textColor: Colors.black,
                             color: Colors.red,
                             onPressed: (() {
+                              if(name.text.isEmpty){
+                                showCustomSnackBar('Name is Empty!');
+                              } else if(number.text.isEmpty){
+                                showCustomSnackBar('Number is Empty !');
+                              }
+                              else{
+                                _authController.editUserProfile(
+                                  name.text.toString(),
+                                  number.text.toString()
+                                );
+
+                              }
+
+
+
                               //            Navigator.push(
                               //    context,
                               //    MaterialPageRoute(builder: (context) => const ResetPassword  (title: '',)),
@@ -807,5 +828,9 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
     );
+
+
+    });
+
   }
 }

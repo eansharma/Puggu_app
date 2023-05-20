@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pugau/Users/Auth/Forget/reset_password.dart';
-import 'package:pugau/Users/Controller/login_controller.dart';
+
 
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 
+import '../Controller/login_controller.dart';
+
 class Login extends StatefulWidget {
-  const Login({super.key, required String title});
+  const Login({super.key,});
 
   @override
   State<Login> createState() => _LoginState();

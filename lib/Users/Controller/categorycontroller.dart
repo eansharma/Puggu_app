@@ -21,17 +21,20 @@ class CategoryController extends GetxController {
   Future<void> categoryData() async {
     try {
       isLoading(true);
-      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
-
-      http.StreamedResponse response = await request.send();
+      final response =
+          await http.get(Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
 
       if (response.statusCode == 200) {
-        var jsonResponse = await response.stream.bytesToString();
-        var decodedResponse = jsonDecode(jsonResponse);
-        CatagoryModel categoryModel = CatagoryModel.fromJson(decodedResponse);
-        categoryList.assignAll(categoryModel.data!);
-
-        print(categoryList);
+         var temp = jsonDecode(response.body)['data'];
+          if (temp.isNotEmpty) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i] != null) {
+              Map<String, dynamic> map = temp[i];
+              categoryList.add(Data.fromJson(map));
+              print(categoryList);
+            }
+          }
+        }
       }
       update();
     } catch (e) {

@@ -1,9 +1,14 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
+import 'package:pugau/Users/Controller/categorycontroller.dart';
 import 'package:pugau/Users/Screens/Search/mart_search.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../util/Helper/helper.dart';
+import '../../util/theme/Pugau_theme_colors.dart';
+import '../Controller/sub_category_controller.dart';
 
 class ProductListing extends StatefulWidget {
   const ProductListing({super.key, required String title});
@@ -13,81 +18,98 @@ class ProductListing extends StatefulWidget {
 }
 
 class _ProductListingState extends State<ProductListing> {
+     
+   final CategoryController _categoryController = Get.put(CategoryController());
+   final SubCategoryController _subCategoryController = Get.put(SubCategoryController());
+     
+
   bool _isSelected=false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-               Padding(
-                 padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
-                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     GestureDetector(onTap: () {
-                                           Navigator.pop(context);
-                                         },
-                                         child: Icon(Icons.arrow_back_ios,size: 20.sp,color: Colors.black,),
-                                         ),
-                                         SizedBox(width: 3.w,),
-                    GestureDetector(
-                      onTap: () {
-                        _dialog();
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 5.5.h,width: 15.w,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(image: AssetImage('assets/images/martflower.png'),fit: BoxFit.cover)
-                            ),
-                          ),const SizedBox(width: 5,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                               Text('Hot Deals',textAlign: TextAlign.center, 
-                               style: TextStyle( color: Colors.black,fontSize: 16.sp,fontWeight: FontWeight.w700)),
-                             Text('510 items',textAlign: TextAlign.center, 
-                               style: TextStyle( color: Colors.black,fontSize: 12.sp,fontWeight: FontWeight.w400)),
-                            ],
+       appBar: AppBar(
+        backgroundColor: PugauColors.WHITE,
+        toolbarHeight: 70,
+        elevation: 0,
+        leading: GestureDetector(onTap: () {
+                                         Navigator.pop(context);
+                                       },
+                                       child: Icon(Icons.arrow_back_ios,size: 20,color: Colors.black,),
+                                       ),
+                                      
+                                      title: GestureDetector(
+                    onTap: () {
+                    
+                     _dialog();
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 5.10.h,width: 20.w,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(image: AssetImage('assets/images/martflower.png'),fit: BoxFit.cover)
                           ),
-                          SizedBox(width: 3.w,),
-                          Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color.fromARGB(255, 207, 207, 207)
-                            ),
-                            child: Icon(Icons.arrow_drop_down,size: 20.sp,),
+                        ),const SizedBox(width: 5,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             Text('Hot Deals',textAlign: TextAlign.center, 
+                             style: TextStyle( color: Colors.black,fontSize: 16,fontWeight: FontWeight.w700)),
+                           Text('510 items',textAlign: TextAlign.center, 
+                             style: TextStyle( color: Colors.black,fontSize: 12,fontWeight: FontWeight.w400)),
+                          ],
+                        ),
+                        SizedBox(width: 3,),
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 207, 207, 207)
                           ),
-                        ],
-                      ),
+                          child: Icon(Icons.arrow_drop_down,size: 20,),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
+                  ),
+
+                  actions: [
+                    
                      GestureDetector(
-                      onTap: () {
-                            Navigator.push(
-                     context,
-                     MaterialPageRoute(builder: (context) => const MartSearch  (title: '',)),
-                   );
-                      },
+                    onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MartSearch(title: '')));
+                    },
+                     child: Padding(
+                       padding: const EdgeInsets.all(12),
                        child: Container(
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Color.fromARGB(255, 207, 207, 207)
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(Icons.search,size: 19.sp,),
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(Icons.search,size: 19,),
                             ),
                           ),
-                     )                   
-                   ],
-                 ),
-               ),
+                     ),
+                   )                   
+                
+                  ],
+                 
+                 
+      ),
+    
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+             
                SizedBox(height: 2.h,),
-                Container(height: 0.15.h,width: MediaQuery.of(context).size.width,color:  Color.fromARGB(255, 207, 207, 207),),
+                Stack(
+                  children: [
+                    Container(
+                      
+                      height: 0.15.h,width: MediaQuery.of(context).size.width,color:  Color.fromARGB(255, 207, 207, 207),),
+                  ],
+                ),
                Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
@@ -100,9 +122,11 @@ class _ProductListingState extends State<ProductListing> {
                           _isSelected=!_isSelected;
                         });
                       },
-                      child: ListView.builder(
+                      child: Obx(() {
+                        return ListView.builder(
                         scrollDirection: Axis.vertical,
-                        itemCount: 10,
+                        physics: ScrollPhysics(),
+                        itemCount: _categoryController.categoryList.length,
                         itemBuilder:(context,index){
                         return  Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -112,21 +136,36 @@ class _ProductListingState extends State<ProductListing> {
                                        Container(
                                     height: 8.h,
                                     width:15.w,
-                                    decoration: const BoxDecoration(
-                                      image: DecorationImage(image: AssetImage('assets/images/martflower.png'),fit: BoxFit.cover)
-                                    ),
+                                    decoration:  BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(AppContent.BASE_URL +
+                            '/public/uploads/menu/' +'${_categoryController.categoryList[index].image}'),
+                        fit: BoxFit.cover,
+                      ),
+                                    )
                                   ),
                                   SizedBox(height: 0.3.h,),
                                    SizedBox(
                                     width: 12.w,
-                                     child: Text('Hot Deals',textAlign: TextAlign.center, 
+                                     child: Text('${_categoryController.categoryList[index].title}',textAlign: TextAlign.center, 
                                          style: TextStyle( color: _isSelected==false? Colors.black:Colors.red,fontSize: 14.sp,fontWeight: FontWeight.w700)),
                                    ),
                                     ],
                                   ),
+                               
+                               
+                               
                                 ),
+                      
+                      
+                      
+                      
                         );
-                      }),
+                      });
+                   
+                  
+                      })
+                   
                     ),
                    ), 
                    Container(width: 0.5.w,height: MediaQuery.of(context).size.height/1.16,color: const Color.fromARGB(255, 207, 207, 207),),
@@ -144,161 +183,142 @@ class _ProductListingState extends State<ProductListing> {
                         ],
                       ),
                     ),
-                 Container(color: const Color.fromARGB(255, 207, 207, 207), height: 0.2.h,width: 20) ,
+                 Container(
+                  color: const Color.fromARGB(255, 207, 207, 207), height: 0.2.h,width: 20) ,
                   
                   Row(
-
+            
                     children: [
-                     GestureDetector(
-                        onTap: () {
-                          category();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(2), 
-                          child: Container(
-                            width: MediaQuery.of(context).size.width/2.6,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 0.5.w,color: Color.fromARGB(255, 207, 207, 207), )
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                       Container(
-
+              
+                     SizedBox(
+                        width: MediaQuery.of(context).size.width-21.6.w,
+                        height: MediaQuery.of(context).size.height,
+          
+                        child:
+                     SingleChildScrollView(
+                        child: Obx(() {
+                          return GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          // itemCount: 10,
+                          itemCount: _subCategoryController.subList.length,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 2.4 / 3.4,
+                          ),
+                          itemBuilder: (context, index) {
+                            var data = _subCategoryController.subList[index];
+                            return GestureDetector(
+                              onTap: () {
+                                category();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(1),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5, color: Color.fromARGB(255, 207, 207, 207)),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Container(
                                               decoration: BoxDecoration(
                                                 color: Colors.orange,
-                                                borderRadius: BorderRadius.circular(4)
+                                                borderRadius: BorderRadius.circular(4),
                                               ),
-                                              child:  SizedBox(
-                                                width: 10.w,
+                                              child: SizedBox(
+                                                width: 9.w,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 1),
-                                                  child: Text('18% OFF',style: TextStyle(color: Colors.white,fontSize: 15.sp,fontWeight: FontWeight.w500),),
-                                                )),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                                                  child: Text(
+                                                    '${data.discount}'+'% OFF',
+                                                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                     Container(
-                                      height: 10.h,width: 10.h,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(image: AssetImage('assets/images/martrice.png'),)
-                                      ),
-                                     )                                 
-                                      
-                                    ],
-                                  ),
-                                  SizedBox(height: 1,),
-                                  Text('Fortuen',style: TextStyle(color: Colors.black,fontSize: 16.sp,fontWeight: FontWeight.w400),),
-                               Text('Besan Four Besan Four',style: TextStyle(color: Colors.black,fontSize: 13.sp,fontWeight: FontWeight.w500),),
-                               Text('500g',style: TextStyle(color: Colors.black,fontSize: 13.sp,fontWeight: FontWeight.w400),),
-                               Row(
-                                 children: [
-                                   Text('\$60',style: TextStyle(color: const Color.fromARGB(255, 207, 207, 207),fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                               const SizedBox(width: 5,),
-                               Text('\$60/kg',style: TextStyle(color: Colors.black,fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                                const SizedBox(width: 5,),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      width:14.w,
-                                      height: 4.5.h,
-                                      child: Card(
-                                        child: Center(child: Text('ADD',style: TextStyle(color: Colors.green,fontSize: 15.sp,fontWeight: FontWeight.w500),)),
-                                      ),
+                                            Padding(
+                                              padding:  EdgeInsets.only(left: 30),
+                                              child: Container(
+                                                height: 9.h,
+                                                width: 10.w,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage('${data.image}'),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          // 'Anuj',
+                                          '${data.title}',
+                                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400),
+                                        ),
+                                        Text(
+                                          '${data.type}',
+                                          style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          '${data.qty}',
+                                          style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w400),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${data.actualPrice}',
+                                              style: TextStyle(color: Color.fromARGB(255, 207, 207, 207), fontSize: 14, fontWeight: FontWeight.w500),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '\$'+'${data.unit}',
+                                              style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Column(
+                                              children: [
+                                                SizedBox(
+                                                  width: 13.w,
+                                                  height: 4.h,
+                                                  child: Card(
+                                                    child: Center(child: Text('ADD', style: TextStyle(color: Colors.green, fontSize: 15, fontWeight: FontWeight.w500))),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Options',
+                                                  style: TextStyle(color: Color.fromARGB(255, 185, 185, 185), fontSize: 14, fontWeight: FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Text('Options',style: TextStyle(color: const Color.fromARGB(255, 185, 185, 185),fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                                  ],
-                                )
-                                 ],
-                               ),
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                   
-                   
+                            );
+                          },
+                        );
                      
-                      GestureDetector(
-                        onTap: () {
-                          category();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(1), 
-                          child: Container(
-                            width: MediaQuery.of(context).size.width/2.6,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 0.5.w,color: Color.fromARGB(255, 207, 207, 207), )
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                       Container(
-
-                                              decoration: BoxDecoration(
-                                                color: Colors.orange,
-                                                borderRadius: BorderRadius.circular(4)
-                                              ),
-                                              child:  SizedBox(
-                                                width: 10.w,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 1),
-                                                  child: Text('18% OFF',style: TextStyle(color: Colors.white,fontSize: 15.sp,fontWeight: FontWeight.w500),),
-                                                )),
-                                            ),
-                                     Container(
-                                      height: 10.h,width: 10.h,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(image: AssetImage('assets/images/martrice.png'),)
-                                      ),
-                                     )                                 
-                                      
-                                    ],
-                                  ),
-                                  SizedBox(height: 1,),
-                                  Text('Fortuen',style: TextStyle(color: Colors.black,fontSize: 16.sp,fontWeight: FontWeight.w400),),
-                               Text('Besan Four Besan Four',style: TextStyle(color: Colors.black,fontSize: 13.sp,fontWeight: FontWeight.w500),),
-                               Text('500g',style: TextStyle(color: Colors.black,fontSize: 13.sp,fontWeight: FontWeight.w400),),
-                               Row(
-                                 children: [
-                                   Text('\$60',style: TextStyle(color: const Color.fromARGB(255, 207, 207, 207),fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                               const SizedBox(width: 5,),
-                               Text('\$60/kg',style: TextStyle(color: Colors.black,fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                                const SizedBox(width: 5,),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      width:14.w,
-                                      height: 4.5.h,
-                                      child: Card(
-                                        child: Center(child: Text('ADD',style: TextStyle(color: Colors.green,fontSize: 15.sp,fontWeight: FontWeight.w500),)),
-                                      ),
-                                    ),
-                                    Text('Options',style: TextStyle(color: const Color.fromARGB(255, 185, 185, 185),fontSize: 14.sp,fontWeight: FontWeight.w500),),
-                                  ],
-                                )
-                                 ],
-                               ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                     
+                        })
+                     
+                      )
+                  
+        
                       ),
-                   
-                   
-                   
+                  
+                  
+                  
                     ],
                   ), 
                  
@@ -326,13 +346,13 @@ class _ProductListingState extends State<ProductListing> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const SizedBox(height: 10,),
+                       SizedBox(height: 10.h,),
                        const Padding(
                          padding: EdgeInsets.symmetric(horizontal: 6,vertical: 10),
                          child: Text('FORTUNE BEASAN FLOUR',textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 12,fontWeight: FontWeight.w600)),
                        ),
-                       const SizedBox(height: 10,),
+                        SizedBox(height: 10.w,),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
@@ -351,15 +371,15 @@ class _ProductListingState extends State<ProductListing> {
                                                                       color: Colors.orange,
                                                                       borderRadius: BorderRadius.circular(4)
                                                                     ),
-                                                                    child:  const SizedBox(
-                                                                      width: 20,
+                                                                    child:   SizedBox(
+                                                                      width: 20.w,
                                                                       child: Padding(
                                                                         padding: EdgeInsets.symmetric(horizontal: 2,vertical: 1),
                                                                         child: Text('18% OFF',style: TextStyle(color: Colors.white,fontSize: 8,fontWeight: FontWeight.w500),),
                                                                       )),
                                                                   ),
                                  Container(
-                                  height: 60,width: 50,
+                                  height: 60.w,width: 50.w,
                                   decoration: const BoxDecoration(
                                     image: DecorationImage(image: AssetImage('assets/images/martrice.png'),fit: BoxFit.cover)
                                   ),
