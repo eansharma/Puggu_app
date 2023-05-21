@@ -6,7 +6,7 @@ import 'package:pugau/Data/Api/API_URLs.dart';
 
 import '../../Data/Model/aboutUs_model.dart';
 
-class WebController extends GetxController {
+class PrivacyController extends GetxController {
   var list = <Data>[].obs;
   @override
   void onInit() {

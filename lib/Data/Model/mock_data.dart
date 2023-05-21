@@ -1,11 +1,15 @@
+import 'package:get/get.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
+
+import '../../Users/Controller/sub_category_controller.dart';
 
 ///
 /// create some example data.
 ///
+
 class MockData {
-
-
+  final SubCategoryController _categoryController =
+      Get.put(SubCategoryController());
 
   ///return a example list, by default, we have 4 sections,
   ///each section has 5 items.
@@ -28,7 +32,6 @@ class MockData {
 ///Section model must implements ExpandableListSection<T>, each section has
 ///expand state, sublist. "T" is the model of each item in the sublist.
 class ExampleSection implements ExpandableListSection<String> {
-  
   //store expand state.
   late bool expanded;
 

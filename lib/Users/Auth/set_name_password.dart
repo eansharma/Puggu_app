@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pugau/Users/Controller/login_controller.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 
 class SetNamePassword extends StatefulWidget {

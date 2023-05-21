@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
 import 'package:http/http.dart' as http;
 
-import '../../Data/Model/category_model.dart';
+import '../../Data/Model/catagory_model.dart';
 
 class CategoryController extends GetxController {
   var categoryList = <Data>[].obs;
@@ -21,7 +21,8 @@ class CategoryController extends GetxController {
   Future<void> categoryData() async {
     try {
       isLoading(true);
-      var request = http.Request('GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
+      var request = http.Request(
+          'GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
 
       http.StreamedResponse response = await request.send();
 

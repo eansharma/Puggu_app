@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:pugau/Users/Controller/login_controller.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 

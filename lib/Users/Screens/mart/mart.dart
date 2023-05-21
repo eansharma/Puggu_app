@@ -24,7 +24,7 @@ class Mart extends StatefulWidget {
 class _MartState extends State<Mart> {
   final BannerController bannerController = Get.put(BannerController());
 
-  final  CategoryController _categoryController = Get.put(CategoryController());
+  final CategoryController _categoryController = Get.put(CategoryController());
   final CoopanController coopanController = Get.put(CoopanController());
   int selectindex = 0;
   int _selectindex = 0;
@@ -48,8 +48,8 @@ class _MartState extends State<Mart> {
                     ),
                     const Spacer(),
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(4),
                           color: Colors.red),
@@ -105,25 +105,24 @@ class _MartState extends State<Mart> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                child: GestureDetector(
-                  onTap: () {
-                    _coupon();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: const Color(0xff1ffe2020),
-                        border: Border.all(width: 1, color: Colors.red)),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: Helper.getScreenWidth(context) / 1.4,
-                            child: CarouselSlider(
+              GetBuilder<CoopanController>(builder: (coopanController) {
+                return GestureDetector(
+                    onTap: () {
+                      _coupon();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: const Color(0xff1ffe2020),
+                          border: Border.all(width: 1, color: Colors.red)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 7),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: Helper.getScreenWidth(context) / 1.4,
+                              child: CarouselSlider.builder(
                                 options: CarouselOptions(
                                   onPageChanged: (index, reason) {
                                     setState(() {
@@ -134,9 +133,11 @@ class _MartState extends State<Mart> {
                                   viewportFraction: 0.99,
                                   initialPage: 0,
                                 ),
-                                items: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                itemBuilder: (BuildContext context, int index,
+                                    int realIndex) {
+                                  return Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       const Text(
                                         '%',
@@ -151,16 +152,16 @@ class _MartState extends State<Mart> {
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: const [
+                                        children: [
                                           Text(
-                                            '50% off upto \$125',
+                                            '50% off upto \$ ${coopanController.coopanData[index].amount}',
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.red),
                                           ),
                                           Text(
-                                            'Use Coupon SUPER MART',
+                                            'Use Coupon ${coopanController.coopanData[index].coupancode}',
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w500,
@@ -169,77 +170,70 @@ class _MartState extends State<Mart> {
                                         ],
                                       ),
                                     ],
-                                  )
-                                ]),
-                          ),
-                          SizedBox(
-                            width: Helper.getScreenWidth(context) / 7.5,
-                            child: PageViewDotIndicator(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 0.5),
-                              size: const Size(6, 6),
-                              currentItem: _selectindex,
-                              count: 4,
-                              unselectedColor: Colors.black26,
-                              selectedColor: Colors.red,
-                              duration: const Duration(milliseconds: 200),
-                              boxShape: BoxShape.circle,
+                                  );
+                                },
+                                itemCount: coopanController.coopanData.length,
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(
+                              width: Helper.getScreenWidth(context) / 7.5,
+                              child: PageViewDotIndicator(
+                                padding: EdgeInsets.symmetric(horizontal: 0.5),
+                                size: Size(6, 6),
+                                currentItem: _selectindex,
+                                count: 2,
+                                unselectedColor: Colors.black26,
+                                selectedColor: Colors.red,
+                                duration: const Duration(milliseconds: 200),
+                                boxShape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
+                    ));
+              }),
+              SizedBox(
                 height: 11,
               ),
               CarouselSlider.builder(
-            options: CarouselOptions(
-                autoPlay: true,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    selectindex = index;
+                options: CarouselOptions(
+                    autoPlay: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        selectindex = index;
+                      });
+                    },
+                    height: 33.h,
+                    viewportFraction: 0.99,
+                    initialPage: 0,
+                    aspectRatio: 2 / 4.2),
+                itemBuilder: (BuildContext context, int index, int realIndex) {
+                  return GetBuilder<BannerController>(
+                      // Define the bcontroller variable here
+                      builder: (bcontroller) {
+                    return bcontroller.martData.isEmpty
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: PugauColors.themeColor,
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Image(
+                              image: NetworkImage(AppContent.BASE_URL +
+                                  '/public/uploads/banner/' +
+                                  bannerController.martData[index]['image']
+                                      .toString()),
+                              fit: BoxFit.cover,
+                              width: 94.5.w,
+                            ),
+                          );
                   });
                 },
-                height: 33.h,
-                viewportFraction: 0.99,
-                initialPage: 0,
-                aspectRatio: 2 / 4.2),
-            itemBuilder: (BuildContext context, int index, int realIndex) {
-        
-             return GetBuilder<BannerController>(
-              // Define the bcontroller variable here
-              builder: (bcontroller){
-                return bcontroller.martData.isEmpty
-                 ? Center(
-                        child: CircularProgressIndicator(
-                          color: PugauColors.themeColor,
-                        ),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image(
-                          image: NetworkImage(AppContent.BASE_URL +
-                              '/public/uploads/banner/' +
-                             bannerController.martData[index]['image'].toString()),
-                          fit: BoxFit.cover,
-                          width: 94.5.w,
-                        ),
-                      );
-              }
-        
-              );
-        
-        
-            },
-            itemCount: bannerController.martData.length, // Use bannerController instead of bcontroller
-          ),
-               
-             
-             
-             
+                itemCount: bannerController.martData
+                    .length, // Use bannerController instead of bcontroller
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -293,123 +287,117 @@ class _MartState extends State<Mart> {
               const SizedBox(
                 height: 20,
               ),
-              GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-          builder: (context) => const ProductListing(
-            title: '',
-          ),
-              ),
-            );
-          },
-          child: Expanded(
-           child: Obx(() {
-  return GridView.builder(
-    itemCount: _categoryController.categoryList.length,
-    physics: NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3,
-      childAspectRatio: 0.8,
-    ),
-    itemBuilder: (context, index) {
-      var category = _categoryController.categoryList[index];
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            Container(
-              height: 110,
-              width: 110,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.pinkAccent.withOpacity(0.2),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const SizedBox(
-                          width: 20,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 2,
-                              vertical: 1,
+              GestureDetector(onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductListing(
+                      title: '',
+                    ),
+                  ),
+                );
+              }, child: Expanded(
+                child: Obx(() {
+                  return GridView.builder(
+                    itemCount: _categoryController.categoryList.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemBuilder: (context, index) {
+                      var category = _categoryController.categoryList[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 110,
+                              width: 110,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.pinkAccent.withOpacity(0.2),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange,
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                        ),
+                                        child: const SizedBox(
+                                          width: 20,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 2,
+                                              vertical: 1,
+                                            ),
+                                            child: Text(
+                                              '18% OFF',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 8,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      const Padding(
+                                        padding: EdgeInsets.all(5.0),
+                                        child: Icon(
+                                          Icons.favorite_border_outlined,
+                                          color: Color.fromARGB(
+                                              255, 133, 132, 132),
+                                          size: 18,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 70,
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(AppContent
+                                                .BASE_URL +
+                                            '/public/uploads/menu/' +
+                                            '${_categoryController.categoryList[index].image}'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Text(
-                              '18% OFF',
+                            const SizedBox(height: 2),
+                            Text(
+                              '${_categoryController.categoryList[index].title}',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 8,
+                                color: Colors.black,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                      const Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.favorite_border_outlined,
-                          color: Color.fromARGB(255, 133, 132, 132),
-                          size: 18,
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    height: 70,
-                    width: 70,
-                    decoration:  BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(AppContent.BASE_URL +
-                            '/public/uploads/menu/' +'${_categoryController.categoryList[index].image}'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              '${_categoryController.categoryList[index].title}',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}),
-
-
-            
-            )
-            
-        
-          ),
-        
-            
+                      );
+                    },
+                  );
+                }),
+              )),
             ],
           ),
         ),

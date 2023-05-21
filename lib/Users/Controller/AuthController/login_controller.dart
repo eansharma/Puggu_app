@@ -1,19 +1,30 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:pugau/Users/Auth/DashBoard.dart';
 import 'package:pugau/Users/Auth/Forget/set_new_password.dart';
 import 'package:pugau/Users/Auth/login.dart';
 import 'package:pugau/Users/Auth/set_name_password.dart';
 import 'package:pugau/Users/Auth/verify_otp.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
+import 'package:pugau/Users/Screens/Profile/user_profile.dart';
 import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Screens/Profile/user_profile.dart';
+import '../../../Data/Model/get_profile_model.dart';
 
 class AuthController extends GetxController implements GetxService {
   bool isLoading = false;
+
+  var userProfile = Data().obs;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    getUserProfile();
+  }
 
   void _setValue(value) async {
     final pref = await SharedPreferences.getInstance();
@@ -252,5 +263,68 @@ class AuthController extends GetxController implements GetxService {
     }
     isLoading = false;
     update();
+  }
+
+  // edit user profile
+
+  Future editUserProfile(String userName, String userNumber) async {
+    final pref = await SharedPreferences.getInstance();
+    var userid = pref.getString('user_id');
+    final url = AppContent.BASE_URL + AppContent.EDIT_URL;
+
+    final body = {
+      'user_id': userid,
+      'name': userName,
+      'phone': userNumber,
+    };
+
+    final editp = await http.post(Uri.parse(url), body: body);
+
+    if (editp.statusCode == 200) {
+      var editpData = jsonDecode(editp.body);
+      if (editpData != null) {
+        showCustomSnackBar(editpData['message'].toString(), isError: false);
+        print(editpData['message']);
+        //  print(userid);
+
+        Get.to(UserProfile(
+          title: '',
+        ));
+        update();
+      }
+    } else {
+      showCustomSnackBar(editp.body.toString(), isError: false);
+    }
+    isLoading = false;
+    update();
+  }
+
+  Future<void> getUserProfile() async {
+    try {
+      isLoading = true;
+      update();
+      final pref = await SharedPreferences.getInstance();
+      var userId = pref.getString('user_id');
+
+      final url = AppContent.BASE_URL + AppContent.GET_USER_PROFILE;
+
+      final body = {
+        'user_id': userId,
+      };
+
+      final response = await http.post(Uri.parse(url), body: body);
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        var profileData = Data.fromJson(jsonResponse['data']);
+        userProfile.value = profileData;
+        print(userProfile);
+      }
+      print(userProfile);
+    } catch (e) {
+      print('An error occurred: $e');
+    } finally {
+      isLoading = false;
+    }
   }
 }

@@ -6,7 +6,7 @@ import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../util/Helper/helper.dart';
-import '../../Controller/login_controller.dart';
+import '../../Controller/AuthController/login_controller.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key, required String title});

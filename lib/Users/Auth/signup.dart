@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:pugau/Users/Auth/select_city.dart';
-import 'package:pugau/Users/Controller/login_controller.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 import 'package:pugau/util/theme/Pugau_Styles.dart';
 import 'package:pugau/util/theme/Pugau_images.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';

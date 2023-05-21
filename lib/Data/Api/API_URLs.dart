@@ -20,4 +20,11 @@ class AppContent {
   static String CATEGORY_URL = '/api/menu';
   static String SUB_MENU_URL = '/api/submenu/40';
   static String COOPAN = '/api/fetch-coupon';
+  static String ROLE = '/api/select-role';
+  static String TOP_OFFERS = '/api/top-offer';
+  static String EDIT_URL='/api/edit-profile';
+  static String GET_USER_PROFILE ='/api/get-profile';
+  
+  static String FAQ = '/api/faq';
+  static String COMPLAINT = '/api/complaint-or-feedback';
 }

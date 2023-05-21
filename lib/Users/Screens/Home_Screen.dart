@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
+import 'package:pugau/Users/Controller/TopOffers_Controller.dart';
 import 'package:pugau/Users/Controller/food_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
 import 'package:pugau/Users/Screens/Order/place_on_order.dart';
@@ -24,7 +27,7 @@ class Food extends StatefulWidget {
 
 class _FoodState extends State<Food> {
   int selectindex = 0;
-
+  final TopOfferController _controller = Get.put(TopOfferController());
   final FoodController controller = Get.put(FoodController());
   @override
   Widget build(BuildContext context) {
@@ -125,7 +128,6 @@ class _FoodState extends State<Food> {
                 ),
               ),
             ),
-           
             body: CustomScrollView(slivers: [
               SliverAppBar(
                 expandedHeight: 110,
@@ -413,28 +415,42 @@ class _FoodState extends State<Food> {
                       height: 3.h,
                     ),
                     SizedBox(
-                      height: 46.h,
-                      child: GridView.builder(
-                          itemCount: 4,
-                          physics: const ScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 3),
-                              height: 10.h,
-                              width: 100.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11),
-                                  image: const DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/foodgrid.png'),
-                                      fit: BoxFit.cover)),
-                            );
-                          }),
-                    ),
+                        height: 46.h,
+                        child: Obx(() {
+                          return GridView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _controller.topOfferData.length,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    print(_controller.topOfferData.length);
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 3),
+                                    height: 10.h,
+                                    width: 100.w,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(11),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                'https://scsy.in/foodbazar/public/' +
+                                                    _controller
+                                                        .topOfferData[index]
+                                                        .imgcoupan
+                                                        .toString()),
+                                            // AssetImage(
+                                            //     'assets/images/foodgrid.png'),
+                                            fit: BoxFit.cover)),
+                                  ),
+                                );
+                              });
+                        })),
+
                     SizedBox(
                       height: 3.h,
                     ),

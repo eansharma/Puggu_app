@@ -2,7 +2,9 @@ import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:pugau/Users/Auth/Forget/set_new_password.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
+import 'package:pugau/Users/Controller/Privacy_Controller.dart';
+
 import 'package:pugau/Users/Screens/review/Widget/aboutus.dart';
 import 'package:pugau/Users/Screens/review/Widget/complaint_feedback.dart';
 import 'package:pugau/Users/Screens/review/customer_review.dart';
@@ -13,10 +15,10 @@ import 'package:pugau/Users/Screens/no_internet_connection.dart';
 import 'package:pugau/Users/Screens/Order/order.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
+import 'package:pugau/widget/customSnakebar.dart';
 
 import '../../Auth/Forget/change_password.dart';
 import '../../Auth/Forget/reset_password.dart';
-import '../../Controller/Web_controller.dart';
 import '../favorite_list.dart';
 import '../googlepay.dart';
 
@@ -28,7 +30,9 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  final WebController _controller = Get.put(WebController());
+  final PrivacyController _controller = Get.put(PrivacyController());
+  final TextEditingController name = TextEditingController();
+  final TextEditingController number = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -483,7 +487,7 @@ class _UserProfileState extends State<UserProfile> {
                 const Divider(
                   color: Color.fromARGB(255, 163, 163, 163),
                 ),
-                GetBuilder<WebController>(
+                GetBuilder<PrivacyController>(
                   builder: (_controller) {
                     return GestureDetector(
                       onTap: () {
@@ -603,8 +607,8 @@ class _UserProfileState extends State<UserProfile> {
     ScrollController scrollController,
     double bottomSheetOffset,
   ) {
-    return Material(
-      child: Container(
+    return GetBuilder<AuthController>(builder: (_authController) {
+      return Container(
         child: ListView(
           controller: scrollController,
           children: [
@@ -663,106 +667,135 @@ class _UserProfileState extends State<UserProfile> {
                         height: 20,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Full Name',
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            SizedBox(
-                                height: 40,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.text,
-                                  textAlign: TextAlign.start,
-                                  //  controller: number,
-                                  textAlignVertical: TextAlignVertical.bottom,
-                                  style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500),
-                                  decoration: InputDecoration(
-                                    hintText: 'User Full Name',
-                                    hintStyle: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500),
-                                    border: InputBorder.none,
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(7),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 153, 153, 153),
-                                            width: 1)
-                                        //<-- SEE HERE
-                                        ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(7),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 153, 153, 153),
-                                            width: 1)
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: GetBuilder<AuthController>(
+                              builder: (procontroller) {
+                            var userProfile = procontroller.userProfile.value;
+                            name.text = userProfile.name.toString();
+                            // number.text=userProfile.phone.toString();
+                            number.text = userProfile.phone.toString();
 
-                                        //<-- SEE HERE
-                                        ),
-                                  ),
-                                )),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              'Phone Number',
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            SizedBox(
-                                height: 40,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.text,
-                                  textAlign: TextAlign.start,
-                                  //  controller: number,
-                                  textAlignVertical: TextAlignVertical.bottom,
-                                  style: const TextStyle(
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Full Name',
+                                  style: TextStyle(
                                       fontSize: 11,
-                                      fontWeight: FontWeight.w500),
-                                  decoration: InputDecoration(
-                                    hintText: 'Phone Number',
-                                    hintStyle: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500),
-                                    border: InputBorder.none,
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(7),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 153, 153, 153),
-                                            width: 1)
-                                        //<-- SEE HERE
-                                        ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(7),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 153, 153, 153),
-                                            width: 1)
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                    height: 40,
+                                    child: TextFormField(
+                                      initialValue: userProfile.name ?? "",
+                                      keyboardType: TextInputType.text,
+                                      textAlign: TextAlign.start,
+                                      controller: name,
+                                      textAlignVertical:
+                                          TextAlignVertical.bottom,
+                                      style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500),
+                                      decoration: InputDecoration(
+                                        hintText: 'User Full Name',
 
-                                        //<-- SEE HERE
-                                        ),
-                                  ),
-                                )),
-                          ],
-                        ),
-                      ),
+                                        // label:Text('${_authController.getUserlist.length}'),
+                                        hintStyle: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500),
+                                        border: InputBorder.none,
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            borderSide: const BorderSide(
+                                                color: Color.fromARGB(
+                                                    255, 153, 153, 153),
+                                                width: 1)
+                                            //<-- SEE HERE
+                                            ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            borderSide: const BorderSide(
+                                                color: Color.fromARGB(
+                                                    255, 153, 153, 153),
+                                                width: 1)
+
+                                            //<-- SEE HERE
+                                            ),
+                                      ),
+                                      onChanged: (value) {
+                                        // Update the phone number in the controller if needed
+                                        procontroller.userProfile.update((val) {
+                                          val!.phone = value;
+                                        });
+                                      },
+                                    )),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  'Phone Number',
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                    height: 40,
+                                    child: TextFormField(
+                                      initialValue: userProfile.phone ?? "",
+                                      keyboardType: TextInputType.text,
+                                      textAlign: TextAlign.start,
+                                      controller: number,
+                                      textAlignVertical:
+                                          TextAlignVertical.bottom,
+                                      style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500),
+                                      decoration: InputDecoration(
+                                        hintText: 'Phone Number',
+                                        hintStyle: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500),
+                                        border: InputBorder.none,
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            borderSide: const BorderSide(
+                                                color: Color.fromARGB(
+                                                    255, 153, 153, 153),
+                                                width: 1)
+                                            //<-- SEE HERE
+                                            ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            borderSide: const BorderSide(
+                                                color: Color.fromARGB(
+                                                    255, 153, 153, 153),
+                                                width: 1)
+
+                                            //<-- SEE HERE
+                                            ),
+                                      ),
+                                      onChanged: (value) {
+                                        // Update the phone number in the controller if needed
+                                        procontroller.userProfile.update((val) {
+                                          val!.phone = value;
+                                        });
+                                      },
+                                    )),
+                              ],
+                            );
+                          })),
                       const SizedBox(
                         height: 50,
                       ),
@@ -778,6 +811,16 @@ class _UserProfileState extends State<UserProfile> {
                             textColor: Colors.black,
                             color: Colors.red,
                             onPressed: (() {
+                              if (name.text.isEmpty) {
+                                showCustomSnackBar('Name is Empty!');
+                              } else if (number.text.isEmpty) {
+                                showCustomSnackBar('Number is Empty !');
+                              } else {
+                                _authController.editUserProfile(
+                                    name.text.toString(),
+                                    number.text.toString());
+                              }
+
                               //            Navigator.push(
                               //    context,
                               //    MaterialPageRoute(builder: (context) => const ResetPassword  (title: '',)),
@@ -805,7 +848,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }

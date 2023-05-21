@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:pugau/Users/Controller/Web_controller.dart';
+import 'package:pugau/Users/Controller/Privacy_Controller.dart';
 
 import '../../../../util/Helper/helper.dart';
 
@@ -16,7 +16,7 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(body: GetBuilder<WebController>(builder: (_controller) {
+        child: Scaffold(body: GetBuilder<PrivacyController>(builder: (_controller) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

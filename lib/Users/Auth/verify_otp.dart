@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:pugau/Users/Auth/Forget/edit_number.dart';
 import 'package:pugau/Users/Auth/set_name_password.dart';
-import 'package:pugau/Users/Controller/login_controller.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 
 import '../../util/Helper/helper.dart';
 
