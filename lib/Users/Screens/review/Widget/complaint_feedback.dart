@@ -1,6 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
+import 'package:pugau/Users/Controller/Feedback_form_controller.dart';
 import 'package:pugau/Users/Controller/city_controller.dart';
 import 'package:pugau/Users/Screens/review/Widget/feedback.dart';
 import 'package:pugau/util/Helper/helper.dart';
@@ -21,14 +23,14 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
   var _selectedType;
   bool isOpen = false;
 
-  final TextEditingController drop = TextEditingController();
   final TextEditingController feedback = TextEditingController();
   final CityController _cityController = Get.put(CityController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
+          body: GetBuilder<AuthController>(builder: (_feedbackController) {
+        return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -135,10 +137,10 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                                         _selectedType = newValue!;
                                       });
                                     },
-                                    items: Type.map((type) {
+                                    items: Type.map((location) {
                                       return DropdownMenuItem(
-                                        value: type,
-                                        child: Text(Type[1].toString()),
+                                        value: location,
+                                        child: Text(location.toString()),
                                       );
                                     }).toList(),
                                   )),
@@ -207,7 +209,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                                       horizontal: 5, vertical: 5),
                                   child: Obx(
                                     () => DropdownButton(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w500),
@@ -215,7 +217,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                                         Icons.keyboard_arrow_down_outlined,
                                         size: 15,
                                       ),
-                                      hint: const Text(
+                                      hint: Text(
                                         'Choose City',
                                         style: TextStyle(
                                             fontSize: 12,
@@ -231,7 +233,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                                       items: _cityController.CityList.map(
                                           (location) {
                                         return DropdownMenuItem(
-                                          value: location,
+                                          value: location.id,
                                           child: Text(location.name.toString()),
                                         );
                                       }).toList(),
@@ -259,16 +261,42 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                     ),
                     textColor: Colors.black,
                     color: Colors.green,
-                    onPressed: (() {
-                      if (feedback.text.isEmpty) {
-                        showCustomSnackBar('Current Password is Empty',
-                            isError: true);
-                      } else {
-                        showCustomSnackBar('Your Complaint successfully',
-                            isError: false);
-                        _popup();
-                      }
-                    }),
+                    onPressed: () {
+                      print("Hiiiiii");
+                      _feedbackController.complain_fedd(
+                        _selectedType.toString(),
+                        feedback.text.toString(),
+                        _selectedLocation.toString(),
+                        "",
+                        "",
+                      );
+                    },
+                    // onPressed: ( {
+                    //   if (_selectedType.text.isEmpty) {
+                    //     showCustomSnackBar('Please Select your type !',
+                    //         isError: true);
+                    //   } else if (feedback.text.isEmpty) {
+                    //     showCustomSnackBar('Caplaint box is empty !',
+                    //         isError: true);
+                    //   } else if (_selectedLocation.text.isEmpty) {
+                    //     showCustomSnackBar('Please Select your city !',
+                    //         isError: true);
+                    //   } else {
+                    //     print("hiiiii");
+                    //     _feedbackController.RaisedComplaint(
+                    //       _selectedType.text.toString(),
+                    //       feedback.text.toString(),
+                    //       _selectedLocation.text.toString(),
+                    //       "",
+                    //       "",
+                    //     );
+                    //     // showCustomSnackBar('your complaint registerd',
+                    //     //     isError: false);
+                    //     // _popup();
+                    //   }
+
+                    // }
+                    // ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
@@ -286,15 +314,15 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
               ),
             ],
           ),
-        ),
-      ),
+        );
+      })),
     );
   }
 
   void _popup() {
     AwesomeDialog(
       dialogBackgroundColor: Colors.white,
-      transitionAnimationDuration: const Duration(milliseconds: 400),
+      transitionAnimationDuration: Duration(milliseconds: 400),
       context: context,
       animType: AnimType.scale,
       dialogType: DialogType.noHeader,
@@ -302,7 +330,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
         width: Helper.getScreenWidth(context),
         child: Column(
           children: [
-            const Text(
+            Text(
               'Test Usertest Your feedback has been successfully submitted',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -310,10 +338,10 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                   fontSize: 12,
                   fontWeight: FontWeight.w700),
             ),
-            const Divider(
+            Divider(
               thickness: 1,
             ),
-            const SizedBox(
+            SizedBox(
               height: 20,
             ),
             Container(
@@ -324,7 +352,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                       image: AssetImage('assets/images/submitfeedback.png'),
                       fit: BoxFit.cover)),
             ),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
             const Text(
@@ -356,8 +384,7 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

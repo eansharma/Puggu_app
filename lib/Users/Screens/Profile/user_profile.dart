@@ -691,7 +691,7 @@ class _UserProfileState extends State<UserProfile> {
                                 SizedBox(
                                     height: 40,
                                     child: TextFormField(
-                                      initialValue: userProfile.name ?? "",
+                                      // initialValue: userProfile.name ?? "",
                                       keyboardType: TextInputType.text,
                                       textAlign: TextAlign.start,
                                       controller: name,
@@ -751,7 +751,7 @@ class _UserProfileState extends State<UserProfile> {
                                 SizedBox(
                                     height: 40,
                                     child: TextFormField(
-                                      initialValue: userProfile.phone ?? "",
+                                      // initialValue: userProfile.phone ?? "",
                                       keyboardType: TextInputType.text,
                                       textAlign: TextAlign.start,
                                       controller: number,

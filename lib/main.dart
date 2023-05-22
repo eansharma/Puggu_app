@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:pugau/widget/splashscreen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -18,6 +19,10 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Pagau',
           home: Splash_screen(),
+          theme: ThemeData(
+            primarySwatch: Colors.red,
+          ),
+          // color: PugauColors.themeColor,
         );
       },
     );

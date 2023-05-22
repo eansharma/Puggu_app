@@ -9,14 +9,16 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../Users/Controller/restaurentcontroller.dart';
 
 class Food_Type_List extends StatefulWidget {
-  const Food_Type_List({super.key});
+  const Food_Type_List({
+    super.key,
+  });
 
   @override
   State<Food_Type_List> createState() => _Food_Type_ListState();
 }
 
 class _Food_Type_ListState extends State<Food_Type_List> {
-  final RestaurentController rscontroller = Get.put(RestaurentController());
+  final ReataurentController rscontroller = Get.put(ReataurentController());
 
   bool _isFavorite = false;
   @override
@@ -24,10 +26,11 @@ class _Food_Type_ListState extends State<Food_Type_List> {
     return Obx(() {
       return GestureDetector(
           onTap: () {
+            rscontroller.restaurentList.toString();
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const RestaurentDetails(
+                  builder: (context) => RestaurentDetails(
                       // title: '',
                       )),
             );
@@ -37,10 +40,10 @@ class _Food_Type_ListState extends State<Food_Type_List> {
             physics: NeverScrollableScrollPhysics(),
             itemCount: rscontroller.restaurentList.length,
             itemBuilder: (context, index) {
-              var restaurant = rscontroller.restaurentList[index];
+              // var restaurant = rscontroller.restaurentList[index];
 
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 width: Helper.getScreenWidth(context),
                 decoration: BoxDecoration(
                   boxShadow: [
@@ -321,7 +324,8 @@ class _Food_Type_ListState extends State<Food_Type_List> {
                                       vertical: 8,
                                     ),
                                     child: Text(
-                                      '${rscontroller.restaurentList[index].tags}',
+                                      "Tags",
+                                      // '${rscontroller.restaurentList[index].tags}',
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.w500,

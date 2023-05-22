@@ -1,45 +1,55 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:pugau/Data/Api/API_URLs.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Data/Model/restaurent_model.dart';
 
-class RestaurentController extends GetxController {
+class ReataurentController extends GetxController {
   var restaurentList = <Data>[].obs;
-  var isLoading = true.obs;
 
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
-    restaurentData();
+    fetchRestaurentData();
   }
 
-  Future<void> restaurentData() async {
+  Future fetchRestaurentData() async {
+    final pref = await SharedPreferences.getInstance();
+    var userId = pref.getString('user_id');
     try {
-      var request = http.Request(
-        'GET',
-        Uri.parse(AppContent.BASE_URL + AppContent.RESTAURENT_URL),
-      );
-      http.StreamedResponse response = await request.send();
+      final res = await http.post(
+          Uri.parse(AppContent.BASE_URL + AppContent.RESTAURENT_URL),
+          body: {
+            'customer_id': userId,
+          });
+      if (res.statusCode == 200) {
+        var temp = jsonDecode(res.body)['data'];
 
-      if (response.statusCode == 200) {
-        var jsonResponse = await response.stream.bytesToString();
-        print(jsonResponse);
-        var decodedResponse = jsonDecode(jsonResponse);
-        RestaurentModel restaurentModel =
-            RestaurentModel.fromJson(decodedResponse);
-        if (restaurentModel.data != null) {
-          restaurentList.assignAll(restaurentModel.data!);
+        print("Hello......${temp.length}");
+
+        if (temp.isNotEmpty) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i] != null) {
+              Map<String, dynamic> map = temp[i];
+              restaurentList.add(Data.fromJson(map));
+            }
+          }
         }
-        print(restaurentList);
-        isLoading.value = false;
+
+        update();
       }
+
+      print("Data is received");
+      print("${restaurentList.length} Aditya");
+      return restaurentList;
     } catch (e) {
-      print(e);
+      print(e.toString());
     }
   }
 }

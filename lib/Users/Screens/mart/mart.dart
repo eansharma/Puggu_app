@@ -105,8 +105,9 @@ class _MartState extends State<Mart> {
                   ),
                 ),
               ),
-              GetBuilder<CoopanController>(builder: (coopanController) {
-                return GestureDetector(
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GestureDetector(
                     onTap: () {
                       _coupon();
                     },
@@ -122,77 +123,86 @@ class _MartState extends State<Mart> {
                           children: [
                             SizedBox(
                               width: Helper.getScreenWidth(context) / 1.4,
-                              child: CarouselSlider.builder(
-                                options: CarouselOptions(
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      _selectindex = index;
-                                    });
-                                  },
-                                  height: 25,
-                                  viewportFraction: 0.99,
-                                  initialPage: 0,
-                                ),
-                                itemBuilder: (BuildContext context, int index,
-                                    int realIndex) {
-                                  return Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        '%',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.red),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '50% off upto \$ ${coopanController.coopanData[index].amount}',
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.red),
-                                          ),
-                                          Text(
-                                            'Use Coupon ${coopanController.coopanData[index].coupancode}',
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                },
-                                itemCount: coopanController.coopanData.length,
-                              ),
+                              child: Obx(() {
+                                return coopanController.dataList.isEmpty
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : CarouselSlider.builder(
+                                        itemCount:
+                                            coopanController.dataList.length,
+                                        options: CarouselOptions(
+                                          onPageChanged: (index, reason) {
+                                            setState(() {
+                                              _selectindex = index;
+                                            });
+                                          },
+                                          height: 25,
+                                          viewportFraction: 0.99,
+                                          initialPage: 0,
+                                        ),
+                                        itemBuilder: (BuildContext context,
+                                            int index, int realIndex) {
+                                          return Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                '%',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.red),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '50% off upto \$ ${coopanController.dataList[index].amount}',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.red),
+                                                  ),
+                                                  Text(
+                                                    'Use Coupon ${coopanController.dataList[index].coupancode}',
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.black),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                              }),
                             ),
-                            SizedBox(
-                              width: Helper.getScreenWidth(context) / 7.5,
-                              child: PageViewDotIndicator(
-                                padding: EdgeInsets.symmetric(horizontal: 0.5),
-                                size: Size(6, 6),
-                                currentItem: _selectindex,
-                                count: 2,
-                                unselectedColor: Colors.black26,
-                                selectedColor: Colors.red,
-                                duration: const Duration(milliseconds: 200),
-                                boxShape: BoxShape.circle,
-                              ),
-                            ),
+                            // Container(
+                            //   width: Helper.getScreenWidth(context) / 7.5,
+                            //   child: PageViewDotIndicator(
+                            //     padding: EdgeInsets.symmetric(horizontal: 0.5),
+                            //     size: Size(6, 6),
+                            //     currentItem: _selectindex,
+                            //     count: coopanController.dataList.length,
+                            //     unselectedColor: Colors.black26,
+                            //     selectedColor: Colors.red,
+                            //     duration: Duration(milliseconds: 200),
+                            //     boxShape: BoxShape.circle,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
-                    ));
-              }),
+                    )),
+              ),
               SizedBox(
                 height: 11,
               ),
@@ -231,8 +241,7 @@ class _MartState extends State<Mart> {
                           );
                   });
                 },
-                itemCount: bannerController.martData
-                    .length, // Use bannerController instead of bcontroller
+                itemCount: bannerController.martData.length,
               ),
               const SizedBox(
                 height: 10,
@@ -291,7 +300,7 @@ class _MartState extends State<Mart> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProductListing(
+                    builder: (context) => ProductListing(
                       title: '',
                     ),
                   ),
@@ -307,7 +316,7 @@ class _MartState extends State<Mart> {
                       childAspectRatio: 0.8,
                     ),
                     itemBuilder: (context, index) {
-                      var category = _categoryController.categoryList[index];
+                      // var category = _categoryController.categoryList[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(

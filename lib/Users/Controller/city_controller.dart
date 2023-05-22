@@ -22,7 +22,7 @@ class CityController extends GetxController {
     // Select
   Future CityName() async{
     try{
-      _isLoading(); // Call the function to set isLoading to true
+      _isLoading(); 
 
       var request = http.Request('GET', Uri.parse(AppContent.BASE_URL+ AppContent.SELECT_CITY_IMAGE));
       http.StreamedResponse response = await request.send();

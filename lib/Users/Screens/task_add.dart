@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pugau/Users/Screens/Genie/genie_billing.dart';
 import 'package:pugau/Users/Screens/select_task_category.dart';
-
+import 'package:intl/intl.dart';
 import '../../util/Helper/helper.dart';
+import '../../util/theme/Pugau_theme_colors.dart';
 import '../Controller/Roll_controller.dart';
 
 class TaskAdd extends StatefulWidget {
@@ -20,6 +21,19 @@ class _TaskAddState extends State<TaskAdd> {
   var _selectedrole;
   final List<String> _date = ['ABCD', 'EFGH', 'IJKL']; // Option 2
   var _selecteddate;
+  TimeOfDay? _selectedTime;
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
 
   final RoleController _roleController = Get.put(RoleController());
   @override
@@ -289,48 +303,65 @@ class _TaskAddState extends State<TaskAdd> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Container(
-                      height: 35,
-                      width: Helper.getScreenWidth(context),
-                      decoration: BoxDecoration(border: Border.all(width: 1)),
-                      child: DropdownButtonHideUnderline(
+                    // Container(
+                    //   height: 35,
+                    //   width: Helper.getScreenWidth(context),
+                    //   decoration: BoxDecoration(border: Border.all(width: 1)),
+                    //   child: DropdownButtonHideUnderline(
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 5, vertical: 5),
+                    //       child: DropdownButton(
+                    //         style: const TextStyle(
+                    //             fontSize: 13, color: Colors.black),
+                    //         icon: const Icon(
+                    //           Icons.keyboard_arrow_down_outlined,
+                    //           size: 15,
+                    //         ),
+                    //         hint: const Text(
+                    //           'Date & Time',
+                    //           style: TextStyle(
+                    //               fontSize: 12,
+                    //               color: Colors.black,
+                    //               fontWeight: FontWeight.w400),
+                    //         ),
+                    //         value: _selecteddate,
+                    //         onChanged: (newValue) {
+                    //           setState(() {
+                    //             _selecteddate = newValue!;
+                    //           });
+                    //         },
+                    //         items: _date.map((location) {
+                    //           return DropdownMenuItem(
+                    //             value: location,
+                    //             child: Text(location),
+                    //           );
+                    //         }).toList(),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    InkWell(
+                      onTap: () {
+                        _selectTime(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border:
+                                Border.all(width: 1, color: PugauColors.BLACK)),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: DropdownButton(
-                            style: const TextStyle(
-                                fontSize: 13, color: Colors.black),
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down_outlined,
-                              size: 15,
-                            ),
-                            hint: const Text(
-                              'Date & Time',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                            value: _selecteddate,
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selecteddate = newValue!;
-                              });
-                            },
-                            items: _date.map((location) {
-                              return DropdownMenuItem(
-                                value: location,
-                                child: Text(location),
-                              );
-                            }).toList(),
-                          ),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                          child: Text(_selectedTime != null
+                              ? '${DateFormat.jm().format(DateTime(2023, 1, 1, _selectedTime!.hour, _selectedTime!.minute))}'
+                              : "Pick Time"),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
-              // Container(child: StopwatchWidget()),
               Padding(
                 padding: const EdgeInsets.only(left: 22, top: 10),
                 child: Container(

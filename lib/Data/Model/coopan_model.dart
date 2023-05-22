@@ -30,7 +30,7 @@ class coopan_model {
 class Data {
   int? id;
   String? coupancode;
-  int? amount;
+  double? amount;
   int? status;
   String? date;
   String? imgcoupan;

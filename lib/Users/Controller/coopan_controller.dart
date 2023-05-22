@@ -1,47 +1,42 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:pugau/Data/Model/coopan_model.dart';
 
-import '../../Data/Api/API_URLs.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
+
+import '../../Data/Model/coopan_model.dart';
 
 class CoopanController extends GetxController {
-  var coopanData = <Data>[].obs;
-
-  var _isLoading = true.obs;
+  var dataList = <Data>[].obs;
 
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
-    fetchCoopanData();
+    fetchData();
   }
 
-  // Select
-  Future fetchCoopanData() async {
+  Future fetchData() async {
     try {
-      _isLoading(); // Call the function to set isLoading to true
-
-      var request = http.Request(
-          'GET', Uri.parse(AppContent.BASE_URL + AppContent.COOPAN));
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        // print(await response.stream.bytesToString());
-
-        var jsonResponse = await response.stream.bytesToString();
-
-        // Use the first element of the list returned by jsonDecode()
-        coopan_model coopanModel =
-            coopan_model.fromJson(jsonDecode(jsonResponse));
-
-        coopanData.value = coopanModel.data!;
-        // print(CityList);
+      final res =
+          await http.get(Uri.parse(AppContent.BASE_URL + AppContent.COOPAN));
+      if (res.statusCode == 200) {
+        var temp = jsonDecode(res.body)['data'];
+        if (temp.isNotEmpty) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i] != null) {
+              Map<String, dynamic> map = temp[i];
+              dataList.add(Data.fromJson(map));
+            }
+          }
+        }
       }
       update();
+      print(dataList);
+      return dataList;
     } catch (e) {
-      print(e);
-    } finally {
-      _isLoading(false); // Set isLoading to false
+      print(e.toString());
     }
   }
 }

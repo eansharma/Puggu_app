@@ -327,4 +327,38 @@ class AuthController extends GetxController implements GetxService {
       isLoading = false;
     }
   }
+
+  Future<void> complain_fedd(
+    String _selectedType,
+    feedback,
+    _selectedLocation,
+    name,
+    phone,
+  ) async {
+    isLoading = true;
+    update();
+    final pref = await SharedPreferences.getInstance();
+    var userid = pref.getString('user_id');
+
+    final response = await http
+        .post(Uri.parse(AppContent.BASE_URL + AppContent.COMPLAINT), body: {
+      'user_id': userid,
+      'type': _selectedType,
+      'message': feedback,
+      'selectedLocation': _selectedLocation,
+      'name': name,
+      'phone': phone,
+    });
+    print(response.body.toString());
+    var res = jsonDecode(response.body);
+
+    print(res);
+    if (res['success'] == true) {
+      showCustomSnackBar(res['message'].toString(), isError: false);
+    } else {
+      showCustomSnackBar(res['message'].toString(), isError: true);
+    }
+    isLoading = false;
+    update();
+  }
 }
