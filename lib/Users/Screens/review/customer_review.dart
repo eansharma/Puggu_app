@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:pugau/util/Helper/helper.dart';
+
+import '../../Controller/customer_review_controller.dart';
 
 class CustomerReview extends StatefulWidget {
   const CustomerReview({super.key, required String title});
@@ -10,6 +13,9 @@ class CustomerReview extends StatefulWidget {
 }
 
 class _CustomerReviewState extends State<CustomerReview> {
+    
+    final CustomerReviewController  controller = Get.put(CustomerReviewController());
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

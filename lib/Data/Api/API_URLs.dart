@@ -23,4 +23,10 @@ class AppContent {
   static String ROLE = '/api/select-role';
   static String TOP_OFFERS = '/api/top-offer';
   static String EDIT_URL='/api/edit-profile';
+  static String GET_USER_PROFILE ='/api/get-profile';
+  
+  static String FAQ = '/api/faq';
+  static String COMPLAINT = '/api/complaint-or-feedback';
+  static String FavRestaurant = '/api/fav-restrorent';
+  
 }

@@ -609,8 +609,7 @@ class _UserProfileState extends State<UserProfile> {
   ) {
     return GetBuilder<AuthController>(builder: (_authController)
     {
-      return Material(
-      child: Container(
+      return  Container(
         child: ListView(
           controller: scrollController,
           children: [
@@ -670,7 +669,14 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
+                        child: GetBuilder<AuthController>(builder: (procontroller){
+                       
+                          var userProfile = procontroller.userProfile.value;
+                          name.text= userProfile.name.toString();
+                          // number.text=userProfile.phone.toString();
+                          number.text=userProfile.phone.toString();
+                          
+                          return  Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
@@ -686,6 +692,7 @@ class _UserProfileState extends State<UserProfile> {
                             SizedBox(
                                 height: 40,
                                 child: TextFormField(
+                                  // initialValue: userProfile.name??"",
                                   keyboardType: TextInputType.text,
                                   textAlign: TextAlign.start,
                                    controller: name,
@@ -695,6 +702,8 @@ class _UserProfileState extends State<UserProfile> {
                                       fontWeight: FontWeight.w500),
                                   decoration: InputDecoration(
                                     hintText: 'User Full Name',
+                                    
+                                    // label:Text('${_authController.getUserlist.length}'),
                                     hintStyle: const TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500),
@@ -716,7 +725,15 @@ class _UserProfileState extends State<UserProfile> {
 
                                         //<-- SEE HERE
                                         ),
-                                  ),
+                                   ),
+                                              onChanged: (value) {
+              // Update the phone number in the controller if needed
+                               procontroller.userProfile.update((val) {
+                                  val!.phone = value;
+                                });
+                              },
+
+
                                 )),
                             const SizedBox(
                               height: 10,
@@ -734,6 +751,8 @@ class _UserProfileState extends State<UserProfile> {
                             SizedBox(
                                 height: 40,
                                 child: TextFormField(
+                                  // initialValue: userProfile.phone ??"",
+                                  
                                   keyboardType: TextInputType.text,
                                   textAlign: TextAlign.start,
                                    controller: number,
@@ -765,10 +784,25 @@ class _UserProfileState extends State<UserProfile> {
                                         //<-- SEE HERE
                                         ),
                                   ),
+                                  onChanged: (value) {
+              // Update the phone number in the controller if needed
+                                procontroller.userProfile.update((val) {
+                                  val!.phone = value;
+                                });
+                              },
                                 )),
                           ],
-                        ),
+                        );
+                     
+                        }
+                        
+                        
+                        )
+                     
+                     
                       ),
+                   
+                   
                       const SizedBox(
                         height: 50,
                       ),
@@ -826,8 +860,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ],
         ),
-      ),
-    );
+      );
 
 
     });

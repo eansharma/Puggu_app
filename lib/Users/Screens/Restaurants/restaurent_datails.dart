@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:pugau/Users/Controller/sub_category_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
 import 'package:pugau/Users/Screens/Search/menu_search.dart';
 import 'package:pugau/Users/Screens/Restaurants/resturaurent_tap.dart';
@@ -25,6 +26,7 @@ class RestaurentDetails extends StatefulWidget {
 
 var itemCount = 0;
 bool rotation = false;
+final SubCategoryController _subController = Get.put(SubCategoryController());
 
 class _RestaurentDetailsState extends State<RestaurentDetails>
     with TickerProviderStateMixin {
@@ -955,8 +957,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                         title: Column(
                           children: [
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
+                              padding: EdgeInsets.symmetric(horizontal: 5),
                               margin: const EdgeInsets.only(
                                   left: 0, right: 10, bottom: 10),
                               decoration: BoxDecoration(
@@ -973,7 +974,10 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('subtitle',
+                                      Text(
+                                          // _subController.subList[index].title
+                                          //     .toString(),
+                                          'subtitle',
                                           style: TextStyle(
                                               fontSize: 16.sp,
                                               color: Colors.black,
@@ -2605,7 +2609,7 @@ class __SectionWidgetState extends State<_SectionWidget>
         child: ListTile(
           title: Text(
             //  '${titleList}',
-            widget.section.header,
+            widget.section.title,
 
             style: TextStyle(color: Colors.black),
           ),

@@ -4,6 +4,7 @@ import 'package:pugau/widget/View/food_type.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../util/Helper/helper.dart';
+import '../../widget/View/fav_restrorent_list.dart';
 import 'Search/main_search.dart';
 
 class FevoriteList extends StatefulWidget {
@@ -471,7 +472,8 @@ class _FevoriteListState extends State<FevoriteList> {
             //     ],
             //   ),
             // ),
-            Food_Type_List()
+            // Food_Type_List()
+                FavRestrorentList()
           ],
         ),
       ),

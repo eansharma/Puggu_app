@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:pugau/Users/Auth/DashBoard.dart';
 import 'package:pugau/Users/Auth/Forget/set_new_password.dart';
 import 'package:pugau/Users/Auth/login.dart';
@@ -11,14 +12,26 @@ import 'package:pugau/widget/customSnakebar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+import '../../Data/Model/get_profile_model.dart';
 import '../Screens/Profile/user_profile.dart';
 
 class AuthController extends GetxController implements GetxService {
   bool isLoading = false;
 
+    var userProfile = Data().obs;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    getUserProfile();
+  }
+
   void _setValue(value) async {
     final pref = await SharedPreferences.getInstance();
     var set1 = pref.setString('user_id', value);
+    // final phone = await SharedPreferences.getInstance();
+    // var set2 = phone.setString('phone_no', value);
   }
 
 // for Genrate Otp
@@ -295,7 +308,35 @@ class AuthController extends GetxController implements GetxService {
 
     }
 
+   Future<void> getUserProfile() async {
+    try {
+      isLoading= true;
+      update();
+             final pref = await SharedPreferences.getInstance();
+    var userId = pref.getString('user_id');
 
+       final url = AppContent.BASE_URL+AppContent.GET_USER_PROFILE;
 
+      final body = {
+        'user_id': userId,
+      };
+
+    final response = await http.post(Uri.parse(url), body: body);
+     
+     if (response.statusCode == 200) {
+     var jsonResponse = jsonDecode(response.body);
+        var profileData = Data.fromJson(jsonResponse['data']);
+        userProfile.value = profileData;
+        print(userProfile);
+        }
+        print(userProfile);
+      
+    
+    } catch (e) {
+      print('An error occurred: $e');
+    } finally {
+      isLoading = false;
+    }
+  }
 
 }
