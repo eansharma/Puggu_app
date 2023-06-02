@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pugau/util/theme/Pugau_theme_colors.dart';
+import 'package:pugau/Users/Controller/Restaurent_Product_Controller.dart';
 import 'package:pugau/widget/splashscreen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'Users/Controller/AuthController/login_controller.dart';
+import 'helper/get_di.dart' as di;
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  di.init();
+  runApp(MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+  Get.put(AuthController()); // Register the AuthController
+     Get.put(Resaurent_Product_Controller());
+    
     return ResponsiveSizer(
       builder: (context, Orientation, ScreenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Pagau',
+          navigatorKey: Get.key,
           home: Splash_screen(),
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-          ),
-          // color: PugauColors.themeColor,
         );
       },
     );

@@ -2,16 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:pugau/Users/Genie_Controller/Genie_Controller_send.dart';
 import 'package:pugau/Users/Screens/Genie/genie_picup.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
 import '../../../Data/Api/API_URLs.dart';
 import '../../../util/Helper/helper.dart';
 import '../../Controller/banner_controller.dart';
 
 class Genie extends StatefulWidget {
-  const Genie({super.key});
+  // const Genie({super.key});
 
   @override
   State<Genie> createState() => _GenieState();
@@ -19,10 +19,10 @@ class Genie extends StatefulWidget {
 
 class _GenieState extends State<Genie> {
      final BannerController bannerController = Get.put(BannerController());
-
   int selectindex = 0;
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(()=>Genie_Controller().genies());
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -54,7 +54,7 @@ class _GenieState extends State<Genie> {
               const SizedBox(
                 height: 8,
               ),
-              const Center(
+              Center(
                   child: Text(
                 'NOTE: ItemWhich is Easily carried on bike is only recommended',
                 style: TextStyle(
@@ -62,56 +62,51 @@ class _GenieState extends State<Genie> {
                     fontWeight: FontWeight.w700,
                     color: Colors.black),
               )),
-              const SizedBox(
+              SizedBox(
                 height: 30,
               ),
- CarouselSlider.builder(
-          options: CarouselOptions(
-              autoPlay: true,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  selectindex = index;
-                });
-              },
-              height: 33.h,
-              viewportFraction: 0.99,
-              initialPage: 0,
-              aspectRatio: 2 / 4.2),
-          itemBuilder: (BuildContext context, int index, int realIndex) {
+              CarouselSlider.builder(
+                options: CarouselOptions(
+                    autoPlay: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        selectindex = index;
+                      });
+                    },
+                    height: 33.h,
+                    viewportFraction: 0.99,
+                    initialPage: 0,
+                    aspectRatio: 2 / 4.2),
+                itemBuilder: (BuildContext context, int index, int realIndex) {
 
-           return GetBuilder<BannerController>(
-            // Define the bcontroller variable here
-            builder: (bcontroller){
-              return bcontroller.genieData.isEmpty
-               ? Center(
-                      child: CircularProgressIndicator(
-                        color: PugauColors.themeColor,
-                      ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image(
-                        image: NetworkImage(AppContent.BASE_URL +
-                            '/public/uploads/banner/' +
-                           bannerController.genieData[index]['image'].toString()),
-                        fit: BoxFit.cover,
-                        width: 94.5.w,
-                      ),
-                    );
-            }
+                  return GetBuilder<BannerController>(
+                    // Define the bcontroller variable here
+                      builder: (bcontroller){
+                        return bcontroller.genieData.isEmpty
+                            ? Center(
+                          child: CircularProgressIndicator(
+                            color: PugauColors.themeColor,
+                          ),
+                        )
+                            : ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image(
+                            image: NetworkImage(AppContent.BASE_URL +
+                                '/public/uploads/banner/' +
+                                bannerController.genieData[index]['image'].toString()),
+                            fit: BoxFit.cover,
+                            width: 94.5.w,
+                          ),
+                        );
+                      }
 
-            );
-
-
-          },
-          itemCount: bannerController.genieData.length, // Use bannerController instead of bcontroller
-        ),
-       
-           
-           
+                  );
 
 
-              const SizedBox(
+                },
+                itemCount: bannerController.genieData.length, // Use bannerController instead of bcontroller
+              ),
+              SizedBox(
                 height: 10,
               ),
               PageViewDotIndicator(

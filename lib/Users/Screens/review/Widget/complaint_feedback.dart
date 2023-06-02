@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 import 'package:pugau/Users/Controller/Feedback_form_controller.dart';
+
 import 'package:pugau/Users/Controller/city_controller.dart';
 import 'package:pugau/Users/Screens/review/Widget/feedback.dart';
 import 'package:pugau/util/Helper/helper.dart';
+import 'package:pugau/widget/customSnakebar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
-import '../../../../widget/customSnakebar.dart';
 
 class ComplaintFeedback extends StatefulWidget {
   const ComplaintFeedback({super.key, required String title});
@@ -22,16 +22,18 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
   var _selectedLocation;
   var _selectedType;
   bool isOpen = false;
-
+  var _selectedLocationId;
+  final ComplaintFeedController _feedbackController =
+      Get.put(ComplaintFeedController());
   final TextEditingController feedback = TextEditingController();
   final CityController _cityController = Get.put(CityController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: GetBuilder<AuthController>(builder: (_feedbackController) {
-        return SingleChildScrollView(
-          child: Column(
+        body: SingleChildScrollView(
+            child: GetBuilder<ComplaintFeedController>(
+          builder: (_feedbackController) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -228,6 +230,8 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                                       onChanged: (newValue) {
                                         setState(() {
                                           _selectedLocation = newValue!;
+                                          // _selectedLocationId =
+                                          //     newValue; // Assign the selected location ID
                                         });
                                       },
                                       items: _cityController.CityList.map(
@@ -262,41 +266,24 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
                     textColor: Colors.black,
                     color: Colors.green,
                     onPressed: () {
-                      print("Hiiiiii");
-                      _feedbackController.complain_fedd(
-                        _selectedType.toString(),
-                        feedback.text.toString(),
-                        _selectedLocation.toString(),
-                        "",
-                        "",
-                      );
+                      if (_selectedType == null) {
+                        showCustomSnackBar('Please select your type!',
+                            isError: true);
+                      } else if (feedback.text.isEmpty) {
+                        showCustomSnackBar('Complaint box is empty!',
+                            isError: true);
+                      } else if (_selectedLocation == null) {
+                        showCustomSnackBar('Please select your city!',
+                            isError: true);
+                      } else {
+                        _feedbackController.complain_fedd(
+                            _selectedType.toString(),
+                            feedback.text.toString(),
+                            _selectedLocation.toString(),
+                            "",
+                            "");
+                      }
                     },
-                    // onPressed: ( {
-                    //   if (_selectedType.text.isEmpty) {
-                    //     showCustomSnackBar('Please Select your type !',
-                    //         isError: true);
-                    //   } else if (feedback.text.isEmpty) {
-                    //     showCustomSnackBar('Caplaint box is empty !',
-                    //         isError: true);
-                    //   } else if (_selectedLocation.text.isEmpty) {
-                    //     showCustomSnackBar('Please Select your city !',
-                    //         isError: true);
-                    //   } else {
-                    //     print("hiiiii");
-                    //     _feedbackController.RaisedComplaint(
-                    //       _selectedType.text.toString(),
-                    //       feedback.text.toString(),
-                    //       _selectedLocation.text.toString(),
-                    //       "",
-                    //       "",
-                    //     );
-                    //     // showCustomSnackBar('your complaint registerd',
-                    //     //     isError: false);
-                    //     // _popup();
-                    //   }
-
-                    // }
-                    // ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
@@ -314,8 +301,8 @@ class _ComplaintFeedbackState extends State<ComplaintFeedback> {
               ),
             ],
           ),
-        );
-      })),
+        )),
+      ),
     );
   }
 

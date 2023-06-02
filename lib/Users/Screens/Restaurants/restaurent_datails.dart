@@ -1,25 +1,37 @@
-import 'dart:math';
-
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
-import 'package:pugau/Users/Controller/restaurentcontroller.dart';
-import 'package:pugau/Users/Controller/sub_category_controller.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
+
+import 'package:pugau/Users/Controller/Restaurent_Product_Controller.dart';
+import 'package:pugau/Users/Controller/cart_controller.dart';
+import 'package:pugau/Users/Controller/coopan_controller.dart';
+import 'package:pugau/Users/Controller/view_card_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
 import 'package:pugau/Users/Screens/Search/menu_search.dart';
 import 'package:pugau/Users/Screens/Restaurants/resturaurent_tap.dart';
+import 'package:pugau/util/theme/Pugau_theme_colors.dart';
+import 'package:pugau/widget/customSnakebar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
 import 'package:vs_scrollbar/vs_scrollbar.dart';
 
+import '../../../Data/Model/Restaurent_Product_model.dart';
 import '../../../util/Helper/helper.dart';
 import '../../../Data/Model/mock_data.dart';
 import 'package:flutter/cupertino.dart';
 
 class RestaurentDetails extends StatefulWidget {
-  const RestaurentDetails({super.key});
+  String? title, image, address, seller_id;
+  // const RestaurentDetails({super.key});
+  RestaurentDetails(
+      {required this.title,
+      required this.image,
+      required this.address,
+      required this.seller_id});
 
   @override
   State<RestaurentDetails> createState() => _RestaurentDetailsState();
@@ -27,26 +39,25 @@ class RestaurentDetails extends StatefulWidget {
 
 var itemCount = 0;
 bool rotation = false;
-final SubCategoryController _subController = Get.put(SubCategoryController());
-final ReataurentController _restaurentController =
-    Get.put(ReataurentController());
+int? check;
 
 class _RestaurentDetailsState extends State<RestaurentDetails>
     with TickerProviderStateMixin {
-  // List<String> titleList = [
-  //   'Recommanded',
-  //   'Sweets',
-  //   'Non-veg',
-  //   'Geolocator',
-  //   'My List',
-  //   'Important',
-  //   'Food',
-  //   'Veg Roll',
-  //   'Pizza',
-  //   'Non-veg',
-  //   'Burger',
-  // ];
-  var sectionList = MockData.getExampleSections();
+  var sectionList = MockData.getExampleSections(
+      Get.find<Resaurent_Product_Controller>().Restaurent.length != 0
+          ? Get.find<Resaurent_Product_Controller>().Restaurent.length
+          : 0,
+      5,
+      Get.find<Resaurent_Product_Controller>().Restaurent);
+
+  int selectedRadio = 1;
+
+  void setSelectedRadio(int val) {
+    setState(() {
+      selectedRadio = val;
+    });
+  }
+
   late TabController tabController, subTabController;
   final GlobalKey<NestedScrollViewState> nestedScrollKey = GlobalKey();
   double _expandedHeight = 200;
@@ -81,13 +92,13 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
     });
   }
 
+  List<int> selectedItemscount = [];
   int _selectindex = 0;
   bool isOpen = true;
   bool btnChange = false;
-  bool _isopen = true;
-  bool _expandble = true;
-  ScrollController? _firstController;
   final ScrollController _scrollController = ScrollController();
+  final CoopanController controller = Get.put(CoopanController());
+  TextEditingController addCooking = TextEditingController();
 
   @override
   void initState() {
@@ -103,7 +114,6 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
             _isPinnedTitleShown = pinned;
           });
         }
-        // print("outerController position: $outerController $kToolbarHeight");
       });
     });
   }
@@ -119,6 +129,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
     return nestedScrollKey.currentState!.outerController;
   }
 
+  final CartController _cartController = Get.put(CartController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -138,10 +149,10 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                   child: Row(children: [
                     TextButton(
                       onPressed: () {
-                        _itemAdded();
+                       
                       },
                       child: Text(
-                        '1 ITEM ADDED',
+                        '${itemCount} ITEM ADDED',
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.white,
@@ -156,7 +167,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                     ),
                     SizedBox(width: 8),
                     Text(
-                      '\$90 plus',
+                      '\$90 Plus',
                       style: TextStyle(
                         fontSize: 15.sp,
                         color: Colors.white,
@@ -165,9 +176,17 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                     Spacer(),
                     TextButton(
                       onPressed: () {
-                        Get.to(() => Cart(
-                              title: '',
-                            ));
+                        if (itemCount == 0) {
+                          showCustomSnackBar(
+                              "Plese Add to product in your cart",
+                              isError: true);
+                        } else {
+                          Get.find<ViewCardController>().viewCardData();
+                          // Get.put(ViewCardController());
+                          Get.to(() => Cart(
+                                title: '',
+                              ));
+                        }
                       },
                       child: Row(
                         children: [
@@ -197,75 +216,20 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
               slivers: <Widget>[
                 SliverPersistentHeader(
                   pinned: true,
-                  delegate: MySliverAppBar(expandedHeight: 240.0),
+                  delegate: MySliverAppBar(
+                    expandedHeight: 240.0,
+                    title: widget.title.toString(),
+                    image: widget.image.toString(),
+                  ),
                 ),
                 SliverAppBar(
                   expandedHeight: MediaQuery.of(context).size.height / 3.3,
-                  //   pinned: true,
-                  //   floating: false,
-                  //   // stretch: true,
-                  //   snap: false,
                   backgroundColor: Colors.white,
-                  //   elevation: 0,
-                  //   toolbarHeight: 40,
-                  //   leading: GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.pop(context);
-                  //     },
-                  //     child: Icon(
-                  //       Icons.arrow_back_ios,
-                  //       size: 22,
-                  //       color: Colors.black,
-                  //     ),
-                  //   ),
-                  //   // title: Opacity(
-                  //   //   opacity: 25 / 25,
-                  //   //   child: Text(
-                  //   //     "Hoichoi Restaurent",
-                  //   //     style: TextStyle(fontSize: 16, color: Colors.black),
-                  //   //   ),
-                  //   // ),
-                  //   actions: [
-                  //     Padding(
-                  //       padding: EdgeInsets.only(right: 20),
-                  //       child: GestureDetector(
-                  //         onTap: () {
-                  //           // Navigator.pop(context);
-                  //         },
-                  //         child: Icon(
-                  //           Icons.share,
-                  //           size: 22,
-                  //           color: Colors.black,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-
                   flexibleSpace: FlexibleSpaceBar(
                     // expandedTitleScale: 1,
                     //
                     background: Column(
                       children: [
-                        // GestureDetector(
-                        //   onTap: () => Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             const RestaurentTap(title: '')),
-                        //   ),
-                        //   child: Container(
-                        //     margin: EdgeInsets.symmetric(
-                        //         horizontal: 10, vertical: 6),
-                        //     height: Helper.getScreenHeight(context) / 3.5,
-                        //     width: Helper.getScreenWidth(context),
-                        //     decoration: BoxDecoration(
-                        //         borderRadius: BorderRadius.circular(8),
-                        //         image: DecorationImage(
-                        //             image: AssetImage(
-                        //                 'assets/images/burgercart.png'),
-                        //             fit: BoxFit.cover)),
-                        //   ),
-                        // ),
                         Column(children: [
                           Container(
                             width: Helper.getScreenWidth(context),
@@ -302,13 +266,22 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const RestaurentTap(
-                                                          title: '',
+                                                        RestaurentTap(
+                                                          title: widget.title
+                                                              .toString(),
+                                                          address: widget
+                                                              .address
+                                                              .toString(),
+                                                          image: widget.image
+                                                              .toString(),
+                                                          seller_id: widget
+                                                              .seller_id
+                                                              .toString(),
                                                         )),
                                               );
                                             },
-                                            child: const Text(
-                                              'Hoichoi Restaurent',
+                                            child: Text(
+                                              widget.title.toString(),
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
@@ -358,7 +331,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                           SizedBox(
                                             height: 5,
                                           ),
-                                          const Text(
+                                          Text(
                                             'City Street Address landmark',
                                             style: TextStyle(
                                               fontSize: 12,
@@ -392,28 +365,6 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                                     ),
                                                   ),
                                                 ),
-                                                onTap: () {
-                                                  showFlexibleBottomSheet(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        topLeft: const Radius
-                                                            .circular(25.0),
-                                                        topRight: const Radius
-                                                            .circular(25.0),
-                                                      ),
-                                                    ),
-                                                    minHeight: 0,
-                                                    initHeight: 0.5,
-                                                    maxHeight: 1,
-                                                    context: context,
-                                                    builder:
-                                                        __buildBottomSheet1,
-                                                    anchors: [0, 0.5, 1],
-                                                    isSafeArea: true,
-                                                  );
-                                                },
                                               ),
                                               SizedBox(
                                                 width: 6,
@@ -471,8 +422,16 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const RestaurentTap(
-                                                      title: '')),
+                                                  RestaurentTap(
+                                                    title:
+                                                        widget.title.toString(),
+                                                    address: widget.address
+                                                        .toString(),
+                                                    image:
+                                                        widget.image.toString(),
+                                                    seller_id: widget.seller_id
+                                                        .toString(),
+                                                  )),
                                         ),
                                         child: Container(
                                           height: 60,
@@ -853,53 +812,74 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                       SizedBox(
                                         width: 7,
                                       ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                          color: Colors.white,
-                                        ),
-                                        width: Helper.getScreenWidth(context) /
-                                            1.53,
-                                        height: 35,
-                                        child: CarouselSlider(
-                                            options: CarouselOptions(
-                                              onPageChanged: (index, reason) {
-                                                setState(() {
-                                                  _selectindex = index;
-                                                });
-                                              },
-                                              height: 25,
-                                              viewportFraction: 0.99,
-                                              initialPage: 0,
+                                      Obx(() {
+                                        if (controller.coupanDataList.isEmpty) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                                // color: PugauColors.themeColor,
+                                                // strokeWidth: 4.0,
+                                                ),
+                                          );
+                                        } else {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(7),
+                                              color: Colors.white,
                                             ),
-                                            items: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: const [
-                                                  Text(
-                                                    '40% OFF up to ₹80',
-                                                    style: TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.black),
-                                                  ),
-                                                  Text(
-                                                    'use code TASTY',
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Color.fromARGB(
-                                                            66, 39, 39, 39)),
-                                                  ),
-                                                ],
+                                            width:
+                                                Helper.getScreenWidth(context) /
+                                                    1.53,
+                                            height: 35,
+                                            child: CarouselSlider.builder(
+                                              itemCount: controller
+                                                  .coupanDataList.length,
+                                              options: CarouselOptions(
+                                                onPageChanged: (index, reason) {
+                                                  setState(() {
+                                                    _selectindex = index;
+                                                  });
+                                                },
+                                                height: 25,
+                                                viewportFraction: 0.99,
+                                                initialPage: 0,
                                               ),
-                                            ]),
-                                      ),
-                                      const Spacer(),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index,
+                                                      int realIndex) {
+                                                final coupon = controller
+                                                    .coupanDataList[index];
+                                                // aditya
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '40% OFF up to ₹ ${coupon.amount?.toStringAsFixed(2)} ',
+                                                      style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.black),
+                                                    ),
+                                                    Text(
+                                                      'use code ${coupon.couponCode ?? ''}',
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Color.fromARGB(
+                                                              66, 39, 39, 39)),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      }),
+                                      Spacer(),
                                       Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -911,16 +891,28 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 0.5, vertical: 12),
-                                          child: PageViewDotIndicator(
-                                            size: Size(6, 6),
-                                            currentItem: _selectindex,
-                                            count: 4,
-                                            unselectedColor: Colors.black26,
-                                            selectedColor: Colors.red,
-                                            duration:
-                                                Duration(milliseconds: 200),
-                                            boxShape: BoxShape.circle,
-                                          ),
+                                          child: controller
+                                                  .coupanDataList.isEmpty
+                                              ? Container(
+                                                  height: 6,
+                                                  width: 6,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: PugauColors
+                                                          .themeColor),
+                                                )
+                                              : PageViewDotIndicator(
+                                                  size: Size(6, 6),
+                                                  currentItem: _selectindex,
+                                                  count: controller
+                                                      .coupanDataList.length,
+                                                  unselectedColor:
+                                                      Colors.black26,
+                                                  selectedColor: Colors.red,
+                                                  duration: Duration(
+                                                      milliseconds: 200),
+                                                  boxShape: BoxShape.circle,
+                                                ),
                                         ),
                                       )
                                     ],
@@ -936,7 +928,10 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                 ),
                 SliverPersistentHeader(
                   pinned: true,
-                  delegate: MySliverHeader(maxExtent: 50, minExtent: 50.0),
+                  delegate: MySliverHeader(
+                      maxExtent: 50,
+                      minExtent: 50.0,
+                      seller_id: widget.seller_id.toString()),
                 ),
                 SliverExpandableList(
                   builder:
@@ -944,6 +939,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                     sectionList: sectionList,
                     sectionBuilder: (context, containerInfo) => _SectionWidget(
                       section: sectionList[containerInfo.sectionIndex],
+                      // containerInfo: [1],
                       containerInfo: containerInfo,
                       onStateChanged: () {
                         //notify ExpandableListView that expand state has changed.
@@ -955,13 +951,12 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                       },
                     ),
                     itemBuilder: (context, sectionIndex, itemIndex, index) {
-                      String item = sectionList[sectionIndex].items[itemIndex];
                       return ListTile(
                         title: Column(
                           children: [
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 5),
-                              margin: const EdgeInsets.only(
+                              margin: EdgeInsets.only(
                                   left: 0, right: 10, bottom: 10),
                               decoration: BoxDecoration(
                                 border: Border(
@@ -978,9 +973,12 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          // _subController.subList[index].title
-                                          //     .toString(),
-                                          'subtitle',
+                                          Get.find<
+                                                  Resaurent_Product_Controller>()
+                                              .Restaurent[sectionIndex]
+                                              .submenus![itemIndex]
+                                              .title
+                                              .toString(),
                                           style: TextStyle(
                                               fontSize: 16.sp,
                                               color: Colors.black,
@@ -994,13 +992,33 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                             padding: const EdgeInsets.all(1),
                                             decoration: BoxDecoration(
                                                 border: Border.all(
-                                                    width: 0.5.w,
-                                                    color: Colors.green),
+                                                  width: 0.5.w,
+                                                  color: Get.find<Resaurent_Product_Controller>()
+                                                              .Restaurent[
+                                                                  sectionIndex]
+                                                              .submenus![
+                                                                  itemIndex]
+                                                              .type
+                                                              .toString() ==
+                                                          "veg"
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                ),
                                                 borderRadius:
                                                     BorderRadius.circular(3)),
-                                            child: const Icon(
+                                            child: Icon(
                                               Icons.circle,
-                                              color: Colors.green,
+                                              color:
+                                                  Get.find<Resaurent_Product_Controller>()
+                                                              .Restaurent[
+                                                                  sectionIndex]
+                                                              .submenus![
+                                                                  itemIndex]
+                                                              .type
+                                                              .toString() ==
+                                                          "veg"
+                                                      ? Colors.green
+                                                      : Colors.red,
                                               size: 12,
                                             ),
                                           ),
@@ -1023,29 +1041,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                                       color: Colors.black,
                                                       fontSize: 14.sp)),
                                             ),
-                                            onTap: () {
-                                              showFlexibleBottomSheet(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        const Radius.circular(
-                                                            25.0),
-                                                    topRight:
-                                                        const Radius.circular(
-                                                            25.0),
-                                                  ),
-                                                ),
-                                                minHeight: 0,
-                                                initHeight: 0.5,
-                                                maxHeight: 1,
-                                                context: context,
-                                                builder: __buildBottomSheet1,
-                                                anchors: [0, 0.5, 1],
-                                                isSafeArea: true,
-                                              );
-                                            },
+                                            onTap: () {},
                                           ),
                                         ],
                                       ),
@@ -1053,29 +1049,40 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                         height: 2.w,
                                       ),
                                       Text(
-                                        '₹180/Plate',
+                                        '₹' +
+                                            Get.find<
+                                                    Resaurent_Product_Controller>()
+                                                .Restaurent[sectionIndex]
+                                                .submenus![itemIndex]
+                                                .price
+                                                .toString() +
+                                            '/' +
+                                            Get.find<
+                                                    Resaurent_Product_Controller>()
+                                                .Restaurent[sectionIndex]
+                                                .submenus![itemIndex]
+                                                .unit
+                                                .toString(),
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w500),
+                                        // unitp
                                       ),
                                       SizedBox(
                                         height: 0.5.w,
                                       ),
                                       Text(
-                                        'With tartar sauce and tomato sauce',
+                                        Get.find<Resaurent_Product_Controller>()
+                                            .Restaurent[sectionIndex]
+                                            .submenus![itemIndex]
+                                            .description
+                                            .toString(),
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 0.5.w,
-                                      ),
-                                      Text(
-                                        'This is some spacial note for some items',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14.sp),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                       ),
                                     ],
                                   ),
@@ -1089,13 +1096,22 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                           GestureDetector(
                                             child: Container(
                                               height: 12.h,
-                                              width: 24.w,
+                                              width: 26.w,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(5),
-                                                  image: const DecorationImage(
-                                                      image: AssetImage(
-                                                          'assets/images/sbh.jpg'),
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(AppContent
+                                                              .BASE_URL +
+                                                          "/public/uploads/subMenu/" +
+                                                          Get.find<
+                                                                  Resaurent_Product_Controller>()
+                                                              .Restaurent[
+                                                                  sectionIndex]
+                                                              .submenus![
+                                                                  itemIndex]
+                                                              .image
+                                                              .toString()),
                                                       fit: BoxFit.cover)),
                                             ),
                                             onTap: () {
@@ -1134,113 +1150,175 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                           ),
                                         ],
                                       ),
-                                      Positioned(
+
+// Inside your build method:
+
+// Inside your build method:
+                                      GetBuilder<CartController>(
+                                        builder: (_cartController) =>
+                                            Positioned(
                                           bottom: 20,
                                           right: 12,
                                           left: 12,
                                           child: InkWell(
                                             onTap: () {
+                                              final customizable = Get.find<
+                                                      Resaurent_Product_Controller>()
+                                                  .Restaurent[sectionIndex]
+                                                  .submenus![itemIndex]
+                                                  .isCustomizable;
+
+                                              if (customizable == 0) {
+                                                _cartController.Add_to_Cart(
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .id
+                                                      .toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .price
+                                                      .toString(),
+                                                  itemCount.toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .unit
+                                                      .toString(),
+                                                );
+                                              } else {
+                                                _cartbottamsheet(
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .id
+                                                      .toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .title
+                                                      .toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .image
+                                                      .toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .unit
+                                                      .toString(),
+                                                  Get.find<
+                                                          Resaurent_Product_Controller>()
+                                                      .Restaurent[sectionIndex]
+                                                      .submenus![itemIndex]
+                                                      .attributes!,
+                                                );
+                                              }
+
                                               setState(() {
-                                                if (btnChange != btnChange) {
-                                                  btnChange = false;
+                                                // Update the specific item's itemCount
+                                                if (selectedItemscount
+                                                    .contains(itemIndex)) {
+                                                  selectedItemscount
+                                                      .remove(itemIndex);
+                                                  itemCount = 1;
                                                 } else {
-                                                  btnChange = true;
+                                                  selectedItemscount
+                                                      .add(itemIndex);
+                                                  itemCount = 1;
                                                 }
                                               });
                                             },
                                             child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 2.0,
-                                                        vertical: 2.5),
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        width: 0.3.w,
-                                                        color: Colors.red),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2)),
-                                                child: btnChange
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
-                                                        children: [
-                                                          itemCount != 0
-                                                              ? InkWell(
-                                                                  onTap: () =>
-                                                                      setState(() =>
-                                                                          itemCount--),
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .remove,
-                                                                    color: Colors
-                                                                        .red,
-                                                                    size: 18.sp,
-                                                                  ),
-                                                                )
-                                                              : const SizedBox(),
-                                                          Text(
-                                                            itemCount
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 14.sp,
-                                                            ),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 2.0, vertical: 5),
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                border: Border.all(
+                                                    width: 0.3,
+                                                    color: Colors.red),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              child: selectedItemscount
+                                                      .contains(itemIndex)
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        itemCount != 1
+                                                            ? InkWell(
+                                                                onTap: () =>
+                                                                    setState(() =>
+                                                                        itemCount--),
+                                                                child: Icon(
+                                                                  Icons.remove,
+                                                                  color: Colors
+                                                                      .red,
+                                                                  size: 18,
+                                                                ),
+                                                              )
+                                                            : SizedBox(),
+                                                        Text(
+                                                          itemCount.toString(),
+                                                          style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 14,
                                                           ),
-                                                          InkWell(
-                                                            onTap: () =>
-                                                                setState(() =>
-                                                                    itemCount++),
-                                                            child: Icon(
-                                                              Icons.add,
-                                                              color: Colors.red,
-                                                              size: 18.sp,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : Row(
-                                                        children: [
-                                                          const Icon(
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () => setState(
+                                                              () =>
+                                                                  itemCount++),
+                                                          child: Icon(
                                                             Icons.add,
                                                             color: Colors.red,
-                                                            size: 15,
+                                                            size: 18,
                                                           ),
-                                                          SizedBox(
-                                                            width: 2.w,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.add,
+                                                          color: Colors.red,
+                                                          size: 15,
+                                                        ),
+                                                        SizedBox(width: 2),
+                                                        Text(
+                                                          'Add',
+                                                          style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 14,
                                                           ),
-                                                          Text(
-                                                            'Add',
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 14.sp,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )),
-                                          )),
+                                                        ),
+                                                      ],
+                                                    ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-
-                            // Container(
-                            //   height: 0,
-                            //   child: Center(
-                            //   child:CustomPaint(
-                            //     painter:
-                            //     DrawDottedhorizontalline()),)
-                            // )
                           ],
                         ),
                       );
@@ -1254,7 +1332,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                 left: 150,
                 child: GestureDetector(
                   onTap: () {
-                    _menu();
+                    _menu(context);
                   },
                   child: Container(
                     height: 5.h,
@@ -1266,11 +1344,11 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.wallpaper_outlined),
+                        Icon(Icons.wallpaper_outlined),
                         SizedBox(
                           width: 1.h,
                         ),
-                        const Text(
+                        Text(
                           'Menu',
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
@@ -1284,50 +1362,6 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
     );
   }
 
-  // Widget _buildHeader(BuildContext context, int sectionIndex, int index) {
-  //   ExampleSection section = sectionList[sectionIndex];
-  //   return InkWell(
-  //       child: Container(
-  //         height: 48,
-  //         color: Colors.white,
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Container(
-  //                 color: Colors.white,
-  //                 height: 48,
-  //                 padding: EdgeInsets.only(left: 20),
-  //                 alignment: Alignment.centerLeft,
-  //                 child: Text(
-  //                   titleList[sectionIndex],
-  //                   style:
-  //                       TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-  //                 )
-
-  //                 ),
-
-  //             Padding(
-  //               padding: const EdgeInsets.only(right: 10),
-  //               child: Icon(
-  //               rotation?
-  //                 Icons.arrow_drop_down: Icons.arrow_drop_up, size: 30,),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-
-  //       onTap: () {
-  //         //toggle section expand state
-  //         setState(() {
-  //           section.setSectionExpanded(!section.isSectionExpanded());
-  //           rotation = ! rotation;
-
-  //         }
-  //         );
-  //       }
-  //       );
-  // }
-
   void _coupon() {
     showModalBottomSheet<void>(
         shape: const RoundedRectangleBorder(
@@ -1335,111 +1369,120 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                 topLeft: Radius.circular(10), topRight: Radius.circular(10))),
         context: context,
         builder: (BuildContext context) {
-          return SingleChildScrollView(
-            child: SizedBox(
-                height: 250.h,
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Coupon Details',
-                        style: TextStyle(
-                            fontSize: 19,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      Divider(
-                        thickness: 1,
-                      ),
-                      Text(
-                        'Free Veg Momo',
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        'Pagau',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        'Get 50% OFF up to \$100',
-                        style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        'Valid on only this order',
-                        style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1,
-                                    color: Color.fromARGB(255, 6, 56, 97)),
-                                borderRadius: BorderRadius.circular(4),
-                                color: Colors.lightBlue.withOpacity(0.3)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: Text(
-                                'WELCOME',
-                                style: TextStyle(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 2, 60, 107)),
+          return SingleChildScrollView(child: Obx(() {
+            if (controller.coupanDataList.isEmpty) {
+              return Center(
+                child: CircularProgressIndicator(
+                    // color: PugauColors.themeColor,
+                    // strokeWidth: 4.0,
+                    ),
+              );
+            } else {
+              return SizedBox(
+                  height: 250.h,
+                  child: Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Coupon Details',
+                          style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        Divider(
+                          thickness: 1,
+                        ),
+                        Text(
+                          'Free Veg Momo',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          'Pagau',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          'Get 50% OFF up to \$ ${controller.coupanDataList[0].amount?.toStringAsFixed(2)}',
+                          style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Text(
+                          'Valid on only this order',
+                          style: TextStyle(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1,
+                                      color: Color.fromARGB(255, 6, 56, 97)),
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.lightBlue.withOpacity(0.3)),
+                              child: Padding(
+                                padding: EdgeInsets.all(3.0),
+                                child: Text(
+                                  '${controller.coupanDataList[0].couponCode ?? ''}',
+                                  style: TextStyle(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color.fromARGB(255, 2, 60, 107)),
+                                ),
                               ),
                             ),
-                          ),
-                          Spacer(),
-                          Text(
-                            'TAP TO COPY',
-                            style: TextStyle(
-                                fontSize: 8,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.red),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Divider(
-                        thickness: 1,
-                      ),
-                      Text(
-                        'Offer term and condition',
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                )),
-          );
+                            Spacer(),
+                            Text(
+                              'TAP TO COPY',
+                              style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.red),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Divider(
+                          thickness: 1,
+                        ),
+                        Text(
+                          'Offer term and condition',
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ));
+            }
+          }));
         });
   }
 
@@ -1826,6 +1869,351 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
         });
   }
 
+  void _cartbottamsheet(
+      String? id, name, image, unit, List<Attributes> variation) {
+    showMaterialModalBottomSheet(
+      // isScrollControlled: true,
+      isDismissible: true,
+      context: context,
+      backgroundColor: Colors.transparent,
+
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+        return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(22),
+                    topRight: Radius.circular(22)),
+                color: PugauColors.WHITE),
+            height: MediaQuery.of(context).size.height / 1.9,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            image: DecorationImage(
+                                image: NetworkImage(AppContent.BASE_URL +
+                                    "/public/uploads/subMenu/" +
+                                    image.toString()),
+                                fit: BoxFit.cover)),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        name.toString(),
+                        // "Rosted Chicken",
+
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.square,
+                        size: 18,
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: Helper.getScreenWidth(context),
+                  margin: EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(.4),
+                          // blurRadius: 2.0,
+                          spreadRadius: 2.0,
+                          offset: Offset(
+                            0.0,
+                            1.0,
+                          )),
+                    ],
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 8, left: 8, right: 8),
+                        child: Row(
+                          children: [
+                            Text(
+                              'QUANTITY',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Seclect any one',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 122, 122, 122),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  border:
+                                      Border.all(width: 1, color: Colors.red)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                ),
+                                child: Text(
+                                  'Required',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: variation.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 25,
+                            child: InkWell(
+                              onTap: () {
+                                setSelectedRadio(index);
+                                String price =
+                                    variation[index].pivot?.price.toString() ??
+                                        "0";
+                                check = int.tryParse(price) ?? 0;
+
+                                setState(() {
+                                  setSelectedRadio(index);
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Transform.scale(
+                                    scale: .8,
+                                    child: Radio(
+                                      activeColor: PugauColors.themeColor,
+                                      value: index,
+                                      groupValue: selectedRadio,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          setSelectedRadio(val!);
+                                          setSelectedRadio(index);
+                                          String price = variation[index]
+                                                  .pivot
+                                                  ?.price
+                                                  .toString() ??
+                                              "0";
+                                          check = int.tryParse(price) ?? 0;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Text(
+                                    variation[index].title.toString(),
+                                    // half
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    ' ${variation[index].pivot!.price}',
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 122, 122, 122),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(width: 10)
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          'Add Cooking Intruction',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: Container(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              minLines: 2,
+                              maxLines: 2,
+                              textAlign: TextAlign.start,
+                              controller: addCooking,
+                              textAlignVertical: TextAlignVertical.bottom,
+                              style: TextStyle(
+                                  fontSize: 15.sp, fontWeight: FontWeight.w500),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                    borderSide: BorderSide(
+                                        color:
+                                            Color.fromARGB(255, 153, 153, 153),
+                                        width: 1)
+                                    //<-- SEE HERE
+                                    ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                    borderSide: BorderSide(
+                                        color:
+                                            Color.fromARGB(255, 153, 153, 153),
+                                        width: 1)
+
+                                    //<-- SEE HERE
+                                    ),
+                              ),
+                            )),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Spacer(),
+                SizedBox(
+                  height: 40,
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: Helper.getScreenWidth(context) / 2.4,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(width: 1, color: Colors.red)),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 5),
+                                child: Visibility(
+                                  visible: itemCount > 0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() => itemCount--);
+                                    },
+                                    child: Icon(
+                                      Icons.minimize,
+                                      color: Colors.red,
+                                      size: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                itemCount.toString(),
+                                // '1',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() => itemCount++);
+                                },
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.red,
+                                  size: 15,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          // repeat();
+                          if (check != 0) {
+                            showCustomSnackBar(
+                                "Product added to cart successfully!",
+                                isError: false);
+                            _cartController.Add_to_Cart(
+                              id.toString(),
+                              variation[0].pivot!.price.toString(),
+                              itemCount,
+                              unit.toString(),
+                            );
+                          } else {
+                            // repeat();
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: Helper.getScreenWidth(context) / 2.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.red,
+                          ),
+                          child: Center(
+                            child: Text(
+                              // abc
+                              ((check ?? 0) * (itemCount ?? 0)).toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ));
+      }),
+    );
+  }
+
   void repeat() {
     showModalBottomSheet<void>(
         shape: RoundedRectangleBorder(
@@ -2043,33 +2431,14 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                         width: 5,
                                       ),
                                       GestureDetector(
-                                        onTap: () {
-                                          showFlexibleBottomSheet(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft:
-                                                    const Radius.circular(25.0),
-                                                topRight:
-                                                    const Radius.circular(25.0),
-                                              ),
-                                            ),
-                                            minHeight: 0,
-                                            initHeight: 0.5,
-                                            maxHeight: 1,
-                                            context: context,
-                                            builder: __buildBottomSheet1,
-                                            anchors: [0, 0.5, 1],
-                                            isSafeArea: true,
-                                          );
-                                        },
+                                        onTap: () {},
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: Colors.pinkAccent
                                                     .withOpacity(0.4),
                                                 borderRadius:
                                                     BorderRadius.circular(4)),
-                                            child: const Padding(
+                                            child: Padding(
                                               padding: EdgeInsets.all(4.0),
                                               child: Text(
                                                 'BESTSELLER',
@@ -2090,7 +2459,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
+                                      Text(
                                         'Rosted Chicken',
                                         style: TextStyle(
                                             color: Colors.black,
@@ -2100,7 +2469,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                       SizedBox(
                                         height: 2.h,
                                       ),
-                                      const Text(
+                                      Text(
                                         'Something about food Food Tasty Something about food Food Tasty Something about food Food Tasty Something about food Food Tasty',
                                         style: TextStyle(
                                             color: Colors.black,
@@ -2122,293 +2491,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
     );
   }
 
-  Widget __buildBottomSheet1(
-    BuildContext context,
-    ScrollController scrollController,
-    double bottomSheetOffset,
-  ) {
-    return Container(
-      child: ListView(
-        controller: scrollController,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height / 1,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            image: DecorationImage(
-                                image: AssetImage('assets/images/rosted.png'),
-                                fit: BoxFit.cover)),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      const Text(
-                        'Roasted Chicken',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      Spacer(),
-                      Icon(
-                        Icons.square,
-                        size: 18,
-                        color: Colors.red,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: Helper.getScreenWidth(context),
-                  margin: EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      new BoxShadow(
-                          color: Colors.grey.withOpacity(.4),
-                          // blurRadius: 2.0,
-                          spreadRadius: 2.0,
-                          offset: Offset(
-                            0.0,
-                            1.0,
-                          )),
-                    ],
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'QUANTITY',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              'Seclect any one',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 122, 122, 122),
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Spacer(),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  border:
-                                      Border.all(width: 1, color: Colors.red)),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 2),
-                                child: Text(
-                                  'Required',
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Half[3 Pieces]',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Spacer(),
-                            Text(
-                              '\$189',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 122, 122, 122),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Full[3 Pieces]',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Spacer(),
-                            Text(
-                              '\$389',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 122, 122, 122),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          'Add Cooking Intruction',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: TextFormField(
-                              keyboardType: TextInputType.multiline,
-                              minLines: 2, maxLines: 2,
-                              textAlign: TextAlign.start,
-                              //  controller: number,
-                              textAlignVertical: TextAlignVertical.bottom,
-                              style: TextStyle(
-                                  fontSize: 15.sp, fontWeight: FontWeight.w500),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(7),
-                                    borderSide: BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 153, 153, 153),
-                                        width: 1)
-                                    //<-- SEE HERE
-                                    ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(7),
-                                    borderSide: BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 153, 153, 153),
-                                        width: 1)
-
-                                    //<-- SEE HERE
-                                    ),
-                              ),
-                            )),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                // Spacer(),
-                SizedBox(
-                  height: 40,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 40,
-                        width: Helper.getScreenWidth(context) / 2.4,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(width: 1, color: Colors.red)),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 5),
-                                child: Icon(
-                                  Icons.minimize,
-                                  color: Colors.red,
-                                  size: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '1',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.add,
-                                color: Colors.red,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          repeat();
-                        },
-                        child: Container(
-                          height: 40,
-                          width: Helper.getScreenWidth(context) / 2.4,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: Colors.red,
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Add Item \$123',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _menu() {
+  void _menu(context) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
@@ -2419,7 +2502,8 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
         context: context,
         builder: (builder) {
           return Container(
-              height: 480.0,
+              // height: 450.0,
+              height: 60.h,
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -2430,10 +2514,10 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                 children: [
                   SizedBox(
                       //color: Colors.white.withOpacity(0.2),
-                      height: 57.h,
+                      height: 60.h,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 20),
+                        padding:
+                            const EdgeInsets.only(right: 6, left: 6, top: 20),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: ListView(children: [
@@ -2449,7 +2533,7 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                       'Menu',
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 16.sp,
+                                          fontSize: 18.sp,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     InkWell(
@@ -2479,11 +2563,17 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                     child: SizedBox(
                                         height: 60.h,
                                         child: ListView.builder(
-                                            itemCount: 100,
+                                            itemCount: Get.find<
+                                                    Resaurent_Product_Controller>()
+                                                .Restaurent
+                                                .length,
                                             shrinkWrap: true,
                                             physics:
-                                                const AlwaysScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
+                                                AlwaysScrollableScrollPhysics(),
+                                            itemBuilder: (
+                                              context,
+                                              index,
+                                            ) {
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 10,
@@ -2496,14 +2586,24 @@ class _RestaurentDetailsState extends State<RestaurentDetails>
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text("Data",
+                                                    Text(
+                                                        Get.find<
+                                                                Resaurent_Product_Controller>()
+                                                            .Restaurent[index]
+                                                            .title
+                                                            .toString(),
                                                         style: TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 16.sp,
+                                                            fontSize: 18.sp,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
-                                                    Text("9",
+                                                    Text(
+                                                        Get.find<
+                                                                Resaurent_Product_Controller>()
+                                                            .Restaurent[index]
+                                                            .submenuCount
+                                                            .toString(),
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 16.sp,
@@ -2541,20 +2641,6 @@ class _SectionWidget extends StatefulWidget {
 
 class __SectionWidgetState extends State<_SectionWidget>
     with SingleTickerProviderStateMixin {
-  List<String> titleList = [
-    'Recommanded',
-    'Sweets',
-    'Non-veg',
-    'Geolocator',
-    'My List',
-    'Important',
-    'Food',
-    'Veg Roll',
-    'Pizza',
-    'Non-veg',
-    'Burger',
-  ];
-
   static final Animatable<double> _halfTween =
       Tween<double>(begin: 0.0, end: 0.5);
   late AnimationController _controller;
@@ -2678,9 +2764,11 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class MySliverHeader extends SliverPersistentHeaderDelegate {
+  String? seller_id;
   MySliverHeader({
     required this.minExtent,
     required this.maxExtent,
+    required this.seller_id,
   });
 
   final double minExtent;
@@ -2697,39 +2785,50 @@ class MySliverHeader extends SliverPersistentHeaderDelegate {
           color: Colors.white, // Set the background color here
           child: Row(
             children: [
-              Card(
-                child: Container(
-                    height: 40, width: 60, child: Center(child: Text('Veg'))),
+              InkWell(
+                onTap: () async {
+                  Get.find<Resaurent_Product_Controller>().check("veg");
+                  await Get.find<Resaurent_Product_Controller>()
+                      .product(seller_id.toString(), "veg");
+                },
+                child: Card(
+                  child: Container(
+                      height: 40, width: 60, child: Center(child: Text('Veg'))),
+                ),
               ),
               SizedBox(
                 width: 10,
               ),
-              Card(
-                child: Container(
-                    height: 40,
-                    width: 90,
-                    child: Center(child: Text('Non Veg'))),
+              InkWell(
+                onTap: () async {
+                  await Get.find<Resaurent_Product_Controller>()
+                      .product(seller_id.toString(), "non_veg");
+                },
+                child: Card(
+                  child: Container(
+                      height: 40,
+                      width: 90,
+                      child: Center(child: Text('Non Veg'))),
+                ),
               ),
               Spacer(),
-              Card(
-                child: Container(
-                  height: 40,
-                  width: 120,
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                        prefixIcon: Icon(Icons.search),
-                        hintText: "Search",
-                        enabled: true,
-                        contentPadding: EdgeInsets.only(top: 5)),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MenuSearch(
-                                    title: '',
-                                  )));
-                    },
+              InkWell(
+                onTap: () {
+                  Get.to(() => MenuSearch());
+                },
+                child: Card(
+                  child: Container(
+                    height: 40,
+                    width: 120,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          border:
+                              OutlineInputBorder(borderSide: BorderSide.none),
+                          prefixIcon: Icon(Icons.search),
+                          hintText: "Search",
+                          enabled: false,
+                          contentPadding: EdgeInsets.only(top: 5)),
+                    ),
                   ),
                 ),
               ),
@@ -2751,8 +2850,12 @@ class MySliverHeader extends SliverPersistentHeaderDelegate {
 
 class MySliverAppBar extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
-
-  MySliverAppBar({required this.expandedHeight});
+  String? title, image;
+  MySliverAppBar({
+    required this.expandedHeight,
+    required this.title,
+    required this.image,
+  });
 
   @override
   Widget build(
@@ -2768,15 +2871,14 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                  image: AssetImage('assets/images/burgercart.png'),
-                  fit: BoxFit.cover)),
+                  image: NetworkImage(image.toString()), fit: BoxFit.cover)),
         ),
         Opacity(
           opacity: shrinkOffset / expandedHeight,
           child: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 25),
+              padding: EdgeInsets.only(left: 10, right: 25),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -2787,7 +2889,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
                       child: Icon(Icons.keyboard_arrow_left,
                           size: 30, color: Colors.black)),
                   Text(
-                    'Hoichoi Resctaurent',
+                    title.toString(),
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,

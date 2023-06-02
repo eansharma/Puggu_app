@@ -15,8 +15,8 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(body: GetBuilder<PrivacyController>(builder: (_controller) {
+    return SafeArea(child:
+        Scaffold(body: GetBuilder<PrivacyController>(builder: (_controller) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -140,7 +140,10 @@ class _AboutUsState extends State<AboutUs> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   // ignore: invalid_use_of_protected_member
-                  child: Text(_controller.list[0].value.toString(),
+                  child: Text(
+                      _controller.list.isNotEmpty
+                          ? _controller.list[0].value.toString()
+                          : '',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 10,
@@ -212,7 +215,10 @@ class _AboutUsState extends State<AboutUs> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(_controller.list[0].value.toString(),
+                  child: Text(
+                      _controller.list.isNotEmpty
+                          ? _controller.list[0].value.toString()
+                          : '',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 10,

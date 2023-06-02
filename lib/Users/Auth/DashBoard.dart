@@ -21,9 +21,7 @@ class _HomeState extends State<Home> {
     Food(title: Text('')),
     Mart(),
     Genie(),
-    FevoriteList(
-      title: '',
-    ),
+    FevoriteList(),
     Appnotification(),
   ];
   @override

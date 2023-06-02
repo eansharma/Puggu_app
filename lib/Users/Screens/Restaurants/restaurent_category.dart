@@ -94,7 +94,7 @@ class _RestaurentCategoryState extends State<RestaurentCategory> {
                      onTap: () {
                        Navigator.push(
                  context,
-                 MaterialPageRoute(builder: (context) => const MenuSearch (title: '',)),
+                 MaterialPageRoute(builder: (context) => MenuSearch ()),
                );
                     },
                     child: Padding(

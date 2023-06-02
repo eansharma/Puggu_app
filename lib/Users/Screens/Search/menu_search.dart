@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 class MenuSearch extends StatefulWidget {
-  const MenuSearch({super.key, required String title});
+  const MenuSearch({super.key,});
 
   @override
   State<MenuSearch> createState() => _MenuSearchState();
 }
 
 class _MenuSearchState extends State<MenuSearch> {
+  String? search;
+  var focusNode = FocusNode();
+  TextEditingController searching=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -18,7 +21,7 @@ class _MenuSearchState extends State<MenuSearch> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  const Text(
+                  Text(
                     'Menu Search',
                     style: TextStyle(
                       fontSize: 16,
@@ -26,7 +29,7 @@ class _MenuSearchState extends State<MenuSearch> {
                       color: Colors.black,
                     ),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
@@ -59,31 +62,28 @@ class _MenuSearchState extends State<MenuSearch> {
                     ),
                     hintText: 'Start Typing to Search....',
                     hintStyle:
-                        const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                     border: InputBorder.none,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7),
                         borderSide: const BorderSide(
                             color: Color.fromARGB(255, 153, 153, 153), width: 1)
-                        //<-- SEE HERE
-                        ),
+                    ),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(7),
                         borderSide: const BorderSide(
                             color: Color.fromARGB(255, 153, 153, 153), width: 1)
-
-                        //<-- SEE HERE
-                        ),
+                    ),
                   ),
                 )),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
             Row(
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   child: Container(
                     decoration: BoxDecoration(
                       boxShadow: const [
@@ -123,10 +123,10 @@ class _MenuSearchState extends State<MenuSearch> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   child: Container(
                     decoration: BoxDecoration(
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
                             color: Colors.grey,
                             blurRadius: 1,
@@ -140,7 +140,7 @@ class _MenuSearchState extends State<MenuSearch> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 8),
                       child: Row(
-                        children: const [
+                        children: [
                           Icon(
                             Icons.square_outlined,
                             color: Colors.red,
@@ -163,24 +163,24 @@ class _MenuSearchState extends State<MenuSearch> {
                 ),
               ],
             ),
-            const SizedBox(
+            SizedBox(
               height: 10,
             ),
             Card(
               elevation: 5,
               child: Column(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     height: 7,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Regular Pizza',
                               style: TextStyle(
                                   color: Colors.black,
@@ -203,9 +203,9 @@ class _MenuSearchState extends State<MenuSearch> {
                                 Container(
                                     decoration: BoxDecoration(
                                         color:
-                                            Colors.pinkAccent.withOpacity(0.4),
+                                        Colors.pinkAccent.withOpacity(0.4),
                                         borderRadius: BorderRadius.circular(4)),
-                                    child: const Padding(
+                                    child: Padding(
                                       padding: EdgeInsets.all(4.0),
                                       child: Text(
                                         'BESTSELLER',
@@ -217,11 +217,11 @@ class _MenuSearchState extends State<MenuSearch> {
                                     )),
                               ],
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 5,
                             ),
                             Row(
-                              children: const [
+                              children: [
                                 Text(
                                   '₹ 162 / Plate',
                                   style: TextStyle(
@@ -251,10 +251,10 @@ class _MenuSearchState extends State<MenuSearch> {
                                 ),
                               ],
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 5,
                             ),
-                            const Text(
+                            Text(
                               'With tartar souce and tomato souce',
                               style: TextStyle(
                                   color: Colors.black,
@@ -263,7 +263,7 @@ class _MenuSearchState extends State<MenuSearch> {
                             ),
                           ],
                         ),
-                        const Spacer(),
+                        Spacer(),
                         SizedBox(
                           height: 100,
                           width: 70,
@@ -317,155 +317,7 @@ class _MenuSearchState extends State<MenuSearch> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Card(
-              elevation: 5,
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Regular Sandwich',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.square_outlined,
-                                  color: Colors.green,
-                                  size: 23,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Container(
-                                    decoration: BoxDecoration(
-                                        color:
-                                            Colors.pinkAccent.withOpacity(0.4),
-                                        borderRadius: BorderRadius.circular(4)),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(4.0),
-                                      child: Text(
-                                        'BESTSELLER',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: const [
-                                Text(
-                                  '₹ 162 / Plate',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  '₹180',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  '10 % off',
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            const Text(
-                              'With tartar souce and tomato souce',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          height: 100,
-                          width: 70,
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: const DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/pizza.png'),
-                                        fit: BoxFit.cover)),
-                              ),
-                              Positioned(
-                                bottom: 17,
-                                left: 10,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(2),
-                                    color: Colors.white,
-                                  ),
-                                  height: 20,
-                                  width: 50,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        'OUT OF STOCK',
-                                        style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 6,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+
           ],
         ),
       ),

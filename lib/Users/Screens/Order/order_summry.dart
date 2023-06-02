@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pugau/Users/Screens/Order/Order_status.dart';
 import 'package:pugau/Users/Screens/review/Widget/complaint_feedback.dart';
 import 'package:pugau/Users/Screens/Order/place_on_order.dart';
 import 'package:pugau/util/Helper/helper.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../Data/Api/API_URLs.dart';
+import '../../../Data/Model/order_status_model.dart';
 
 
 class OrderSummary extends StatefulWidget {
@@ -13,9 +19,104 @@ class OrderSummary extends StatefulWidget {
 }
 
 class _OrderSummaryState extends State<OrderSummary> {
+
+   bool _showProgressBar = true;
+   var _isLoading= true;
+
+  var summery ;
+    List<Data> Details_order = [];
+Future  orderStatusDetails() async {
+  try {
+       
+       _isLoading = true;
+    final res = await http.post(
+      Uri.parse(AppContent.BASE_URL + AppContent.MY_ORDER_URL),
+      body: {"user_id": "201"},
+    );
+    if (res.statusCode == 200) {
+      setState(() {
+        summery = jsonDecode(res.body)['data'];
+      });
+
+      if (summery != null) {
+        Details_order.clear();
+        for (int i = 0; i < summery.length; i++) {
+          Map<String, dynamic> map = summery[i];
+          Details_order.add(Data.fromJson(map));
+          print(Details_order);
+        }
+      }
+      setState(() {
+        _isLoading = false; // Set isLoading to false after data is loaded
+      });
+    }
+    return Details_order;
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+
+
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    orderStatusDetails();
+
+     Future.delayed(Duration(seconds:5), () {
+      setState(() {
+        _showProgressBar = false;
+      });
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Progress Bar Example'),
+      // ),
+      //  body: _isLoading ? _buildProgressBar() : _buildBody(),
+       body: _showProgressBar ? _buildProgressBar() : _buildBody(),
+    );
+  }
+
+
+Widget _buildProgressBar() {
+   orderStatusDetails();
+  return Center(
+    child: Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        border: Border.all(color: Colors.black, width: 2),
+        // shape: BoxShape.circle,
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+
+Widget _buildBody() {
+
+   orderStatusDetails();
+      //  List<Data> detailsOrder = Details_order.isNotEmpty ? [Details_order[0]] : [];
+      List<Data> detailsOrder = Details_order.isNotEmpty ? [Details_order.first] : [];
+    // Your actual body content goes here
+     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
           child: Column(
@@ -93,9 +194,12 @@ class _OrderSummaryState extends State<OrderSummary> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                     const SizedBox(
+                                      SizedBox(
                                       width: 160,
-                                      child: Text('Karnavati Fast Food',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.black),)),
+                                      child: Text(
+                                        // 'Karnavati Fast Food',
+                                       detailsOrder[0].userName.toString(),
+                                        style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.black),)),
                                   const Spacer(),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,7 +218,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                                             color: Colors.grey,
                                             borderRadius: BorderRadius.circular(4)
                                           ),
-                                          child:  const Center(child: Text('DELIVERED',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: Colors.black),)),
+                                          child:   Center(child: Text(
+                                            detailsOrder[0].status.toString().toUpperCase()
+                                            
+                                            // 'DELIVERED'
+                                            ,style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: Colors.black),)),
                                         ),
                                       ),
                                    const SizedBox(height: 5,),
@@ -185,24 +293,49 @@ class _OrderSummaryState extends State<OrderSummary> {
                      ),
                    ), 
                    const SizedBox(height: 10,),
-                    Padding(
+                   ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: detailsOrder[0].orderitem!.length,
+                    // itemCount: detailsOrder.isNotEmpty && detailsOrder[0].orderitem != null ? detailsOrder[0].orderitem!.length : 0,
+
+                    // itemCount: detailsOrder.isNotEmpty ? detailsOrder[0].orderitem!.length : 0,
+                    itemBuilder: (context, index){
+                     if (detailsOrder.isEmpty) {
+                      return Container(); // Return an empty container if detailsOrder is empty
+                    }
+                      // final Orderitem orderItem = detailsOrder[0].orderitem![index];
+                      final Orderitem orderItem = detailsOrder.first.orderitem![index];
+
+                    return  Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
+                   
                       child: Row(
                         children: [
                           Column(
                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                children: const [
+                                children:  [
                                  Icon(Icons.square,color: Colors.green,size: 18,),
-                                  SizedBox(width: 90,
-                                   child: Text('Butter Vada Pav 1 x ₹30',style: TextStyle(fontSize:12,fontWeight: FontWeight.w500,color: Colors.black),)),
+                                  SizedBox(width: 200,
+                                   child: Text(
+                                    // 'Butter Vada Pav 1 x ₹30'
+                                    //  '$title ${orderItem.qty} x ₹${orderItem.prices}',
+                                    // orderItem.submenu!.title.toString() + ' x ' + orderItem.submenu!.price.toString()
+                                    '${orderItem.submenu!.title} ${orderItem.qty} x ₹${orderItem.submenu!.price}'
+                                    ,style: TextStyle(fontSize:12,fontWeight: FontWeight.w500,color: Colors.black),)),
                                 ],
                               ),
                               const SizedBox(height: 5,),
-                              const Padding(
+                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8),
-                                child: Text('Menu Discription Menu Discription Menu Discription',style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
+                                child: Text(
+                                  // 'Menu Discription Menu Discription Menu Discription'
+                                  // orderItem.submenu?.description.toString() ?? ''
+                                  (orderItem.submenu != null ? orderItem.submenu!.description.toString() : '')
+
+
+                                  ,style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
                               )
                             ],
                           ),
@@ -213,7 +346,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                                        height: 60,width:60 ,
                                        decoration: BoxDecoration(
                                          borderRadius: BorderRadius.circular(4),
-                                         image: const DecorationImage(image: AssetImage('assets/images/pizza.png'),fit: BoxFit.cover)
+                                         image:  DecorationImage(
+                                          image: NetworkImage( AppContent.BASE_URL+ "/public/uploads/subMenu/"+
+                                            orderItem.submenu!.image.toString()),
+                                            
+                                            fit: BoxFit.cover)
                                        ),
                                       ),
                                    Positioned(
@@ -225,7 +362,11 @@ class _OrderSummaryState extends State<OrderSummary> {
                                         color: Colors.white,
                                         border: Border.all(width: 0.5,color: Colors.red)
                                       ),
-                                      child: const Center(child: Text('₹30',style: TextStyle(fontSize: 10),)),
+                                      child:  Center(child: Text(
+                                        // '₹30'
+                                        "₹"+ orderItem.submenu!.price.toString()
+
+                                        ,style: TextStyle(fontSize: 10),)),
                                     )
                                     )
                                     ],
@@ -233,36 +374,40 @@ class _OrderSummaryState extends State<OrderSummary> {
                                    
                         ],
                       ),
-                    ),
-                    const Divider(thickness: 1,),
-                     const SizedBox(height: 10,),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Row(
-                        children: [
-                          Column(
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: const [
-                                 Icon(Icons.square,color: Colors.green,size: 18,),
-                                  SizedBox(width: 75,
-                                   child: Text('Paneer Pizza 1 x ₹30',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: Colors.black),)),
-                                ],
-                              ),
-                              const SizedBox(height: 5,),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 13),
-                                child: Text('Menu Discription Menu Discription Menu Discription',style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
-                              )
-                            ],
-                          ),
-                                   const Spacer(),
-                                  const Text('₹30',style: TextStyle(fontSize: 12),)
-                        ],
-                      ),
-                    ),
-                    const Divider(thickness: 1,),
+                    );
+                   }),
+                  
+                  
+                  
+                    // Divider(thickness: 1,),
+                    //  const SizedBox(height: 10,),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 6),
+                    //   child: Row(
+                    //     children: [
+                    //       Column(
+                    //        crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Row(
+                    //             children: const [
+                    //              Icon(Icons.square,color: Colors.green,size: 18,),
+                    //               SizedBox(width: 75,
+                    //                child: Text('Paneer Pizza 1 x ₹30',style: TextStyle(fontSize: 12,fontWeight: FontWeight.w500,color: Colors.black),)),
+                    //             ],
+                    //           ),
+                    //           const SizedBox(height: 5,),
+                    //           const Padding(
+                    //             padding: EdgeInsets.symmetric(horizontal: 13),
+                    //             child: Text('Menu Discription Menu Discription Menu Discription',style: TextStyle(fontSize: 11,fontWeight: FontWeight.w500,color: Colors.black),),
+                    //           )
+                    //         ],
+                    //       ),
+                    //                const Spacer(),
+                    //               const Text('₹30',style: TextStyle(fontSize: 12),)
+                    //     ],
+                    //   ),
+                    // ),
+                    // const Divider(thickness: 1,),
                     const SizedBox(height: 15,),
                      Padding(
                        padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -367,72 +512,92 @@ class _OrderSummaryState extends State<OrderSummary> {
                       borderRadius: BorderRadius.circular(7),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 6),
+                      padding:  EdgeInsets.symmetric(horizontal: 6,vertical: 6),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Order Id',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('43567999',textAlign: TextAlign.center, 
+                             Text(
+                              detailsOrder[0].orderitem![0].id.toString(),
+                              // '43567999'
+                              textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children: [
                                Text('Payment',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('Paid: Using Upi',textAlign: TextAlign.center, 
+                             Text(
+                              'Paid: '+detailsOrder[0].paymentMode.toString(),
+                             textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Order by',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('Kishor Saha',textAlign: TextAlign.center, 
+                             Text(
+                              detailsOrder[0].userName.toString()
+                              // 'Kishor Saha'
+                              ,textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Phone Number',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('43567999',textAlign: TextAlign.center, 
+                             Text(
+                              // '43567999'
+                              detailsOrder[0].userPhone.toString()
+                              ,textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Delivery Address',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('City, Street Full Address',textAlign: TextAlign.center, 
+                             Text(
+                              // 'City, Street Full Address'
+                              detailsOrder[0].address!.address.toString()
+
+                              ,textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                            Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Call Confirmation',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('Yes',textAlign: TextAlign.center, 
+                             Text(
+                              // 'Yes'
+                             
+
+                              detailsOrder[0].call?. toString() ?? ' ',
+                              textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
@@ -450,22 +615,28 @@ class _OrderSummaryState extends State<OrderSummary> {
                            const SizedBox(height: 10,),
                             Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Schedule Delivery',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('April 26,2023 at 5:00 PM',textAlign: TextAlign.center, 
+                             Text(
+                              // 'April 26,2023 at 5:00 PM'
+                              detailsOrder[0].address!.createdAt.toString()
+                              ,textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
                            const SizedBox(height: 10,),
                             Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
+                             children:  [
                                Text('Date & Time',textAlign: TextAlign.center, 
                          style: TextStyle( color: Color.fromARGB(255, 143, 142, 142),fontSize: 12,fontWeight: FontWeight.w500)),
                             SizedBox(height: 4,),
-                             Text('April 26,2023 at 5:00 PM',textAlign: TextAlign.center, 
+                             Text(
+                              // 'April 26,2023 at 5:00 PM'
+                               detailsOrder[0].address!.createdAt.toString()
+                              ,textAlign: TextAlign.center, 
                          style: TextStyle( color: Colors.black,fontSize: 14,fontWeight: FontWeight.w400)),
                              ],
                            ),
@@ -479,5 +650,6 @@ class _OrderSummaryState extends State<OrderSummary> {
         ),
       ),
     );
+  
   }
 }

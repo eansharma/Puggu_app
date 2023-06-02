@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+import 'package:pugau/Data/Api/API_URLs.dart';
 import 'package:pugau/Users/Auth/select_city.dart';
 import 'package:pugau/Users/Controller/AuthController/login_controller.dart';
 import 'package:pugau/util/theme/Pugau_Styles.dart';
@@ -27,7 +28,6 @@ class _SignUpState extends State<SignUp> {
   ]; // Option 2
   int selectindex = 0;
   final TextEditingController phone = TextEditingController();
-  final AuthController _authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(child:
@@ -35,59 +35,75 @@ class _SignUpState extends State<SignUp> {
       return SingleChildScrollView(
         child: Column(
           children: [
-            CarouselSlider(
-                options: CarouselOptions(
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        selectindex = index;
-                      });
-                    },
-                    height: 47.h,
-                    viewportFraction: 1,
-                    autoPlay: true,
-                    initialPage: 0,
-                    aspectRatio: 2 / 4.2),
-                items: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: Image(
-                        image: AssetImage(Pugau_Images.SignUpImage),
-                        fit: BoxFit.cover,
-                        width: Helper.getScreenWidth(context),
-                      )),
-                  ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5)),
-                      child: Image(
-                        image: AssetImage(Pugau_Images.SignUpImage),
-                        fit: BoxFit.cover,
-                        width: Helper.getScreenWidth(context),
-                      )),
-                  ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5)),
-                      child: Image(
-                        image: AssetImage(Pugau_Images.SignUpImage),
-                        fit: BoxFit.cover,
-                        width: Helper.getScreenWidth(context),
-                      )),
-                  ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          bottomRight: Radius.circular(5)),
-                      child: Image(
-                        image: AssetImage(Pugau_Images.SignUpImage),
-                        fit: BoxFit.cover,
-                        width: Helper.getScreenWidth(context),
-                      )),
-                ]),
+           CarouselSlider.builder(
+                  options: CarouselOptions(
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          selectindex = index;
+                        });
+                      },
+                      height: 47.h,
+                      viewportFraction: 1,
+                      autoPlay: true,
+                      initialPage: 0,
+                      aspectRatio: 2 / 4.2),
+                itemBuilder: (BuildContext context,int index,int realindex) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image(
+                      image: NetworkImage(AppContent.BASE_URL +
+                          '/public/uploads/banner/' +
+                          _authController.login_list[index].image.toString()
+                              .toString()),
+                      fit: BoxFit.cover,
+                      width: Helper.getScreenWidth(context),
+                    ),
+                  );
+                },
+                itemCount: _authController.login_list.length,
+                /*  items: [
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image(
+                          image: AssetImage(Pugau_Images.SignUpImage),
+                          fit: BoxFit.cover,
+                          width: Helper.getScreenWidth(context),
+                        )),
+                    ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5)),
+                        child: Image(
+                          image: AssetImage(Pugau_Images.SignUpImage),
+                          fit: BoxFit.cover,
+                          width: Helper.getScreenWidth(context),
+                        )),
+                    ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5)),
+                        child: Image(
+                          image: AssetImage(Pugau_Images.SignUpImage),
+                          fit: BoxFit.cover,
+                          width: Helper.getScreenWidth(context),
+                        )),
+                    ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5)),
+                        child: Image(
+                          image: AssetImage(Pugau_Images.SignUpImage),
+                          fit: BoxFit.cover,
+                          width: Helper.getScreenWidth(context),
+                        )),
+                  ]*/
+              ),
+
             SizedBox(height: 2.h),
             PageViewDotIndicator(
               size: Size(13.sp, 13.sp),
               currentItem: selectindex,
-              count: 4,
+              count: _authController.login_list.length,
               unselectedColor: Colors.black26,
               selectedColor: Colors.red,
               duration: const Duration(milliseconds: 200),
@@ -231,18 +247,8 @@ class _SignUpState extends State<SignUp> {
                     child: CircularProgressIndicator(
                     strokeWidth: 4.0,
                     color: PugauColors.themeColor,
-                  )),
-
-            // SizedBox(height: 16.0),
-            // GetBuilder<OTPController>(
-            //   builder: (controller) {
-            //     if (controller.isLoading.value) {
-            //       return CircularProgressIndicator();
-            //     } else {
-            //       return Text('OTP: ${controller.otp.value}');
-            //     }
-            //   },
-            // ),
+                  ),
+            ),
             SizedBox(
               height: 2.h,
             ),

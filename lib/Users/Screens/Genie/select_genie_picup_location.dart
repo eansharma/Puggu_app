@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pugau/Users/Screens/add_more_details.dart';
 import 'package:pugau/util/Helper/helper.dart';
 
 import '../Location/add_genie_picup_location.dart';
 
 class SelectGeniePicupLocation extends StatefulWidget {
-  const SelectGeniePicupLocation({super.key, required String title});
+  // const SelectGeniePicupLocation({super.key});
+  String? type;
+  SelectGeniePicupLocation({required this.type});
 
   @override
   State<SelectGeniePicupLocation> createState() =>
@@ -34,14 +37,14 @@ class _SelectGeniePicupLocationState extends State<SelectGeniePicupLocation> {
                         size: 18,
                       ),
                     ),
-                    const Text(
+                    Text(
                       'Change City',
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Colors.black),
                     ),
-                    const Spacer(),
+                    Spacer(),
                     GestureDetector(
                         onTap: () {
                           showModalBottomSheet<void>(
@@ -240,46 +243,56 @@ class _SelectGeniePicupLocationState extends State<SelectGeniePicupLocation> {
                   ],
                 ),
               ),
-              Container(
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    textAlign: TextAlign.start,
-                    //  controller: number,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    style: const TextStyle(
-                        fontSize: 11, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration(
-                      suffixIcon: const Icon(
-                        Icons.close,
-                        color: Colors.black,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.red,
-                      ),
-                      hintText: 'Search for area Street name',
-                      hintStyle: const TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w500),
-                      border: InputBorder.none,
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: Color.fromARGB(255, 153, 153, 153),
-                              width: 1)
-                          //<-- SEE HERE
-                          ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7),
-                          borderSide: const BorderSide(
-                              color: Color.fromARGB(255, 153, 153, 153),
-                              width: 1)
-
-                          //<-- SEE HERE
-                          ),
+              InkWell(
+                onTap: (){
+                  Get.to(()=>AddGeniePicupLocation(type:widget.type));
+                },
+                child: Container(
+                  margin:EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black,width: 1),
+                      borderRadius: BorderRadius.circular(5)
                     ),
-                  )),
+                    child: TextFormField(
+                      keyboardType: TextInputType.text,
+                      textAlign: TextAlign.start,
+                      //  controller: number,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      style: TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w500),
+                      decoration: InputDecoration(
+                        suffixIcon: const Icon(
+                          Icons.close,
+                          color: Colors.black,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.red,
+                        ),
+                        enabled: false,
+                        hintText: 'Search for area Street name',
+                        hintStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(bottom: 14),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7),
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 153, 153, 153),
+                                width: 1)
+                            ),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7),
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 153, 153, 153),
+                                width: 1)
+
+                            //<-- SEE HERE
+                            ),
+                      ),
+                    )),
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -343,12 +356,9 @@ class _SelectGeniePicupLocationState extends State<SelectGeniePicupLocation> {
                         fontWeight: FontWeight.w500)),
               ),
               GestureDetector(
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const AddGeniePicupLocation(title: '')),
-                ),
+                onTap: () {
+
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(

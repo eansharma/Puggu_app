@@ -7,7 +7,7 @@ import 'package:pugau/Data/Api/API_URLs.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Data/Model/restaurent_model.dart';
+import '../../../Data/Model/restaurent_model.dart';
 
 class ReataurentController extends GetxController {
   var restaurentList = <Data>[].obs;
@@ -22,12 +22,19 @@ class ReataurentController extends GetxController {
   Future fetchRestaurentData() async {
     final pref = await SharedPreferences.getInstance();
     var userId = pref.getString('user_id');
+    var city_id = pref.getString('city');
     try {
       final res = await http.post(
           Uri.parse(AppContent.BASE_URL + AppContent.RESTAURENT_URL),
-          body: {
+          body: userId!=null?{
             'customer_id': userId,
-          });
+            "type":"normal",
+            "city_id":city_id
+          }:{
+            "type":"normal",
+            "city_id":city_id
+          }
+      );
       if (res.statusCode == 200) {
         var temp = jsonDecode(res.body)['data'];
 

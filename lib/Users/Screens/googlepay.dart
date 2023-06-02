@@ -1,6 +1,7 @@
 
+import 'package:esewa_pnp/esewa.dart';
+import 'package:esewa_pnp/esewa_pnp.dart';
 import 'package:flutter/material.dart';
-import 'package:pugau/Users/Screens/Order/placing_your_order.dart';
 
 import '../../util/Helper/helper.dart';
 
@@ -12,12 +13,20 @@ class GooglePay extends StatefulWidget {
 }
 
 class _GooglePayState extends State<GooglePay> {
- 
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  ESewaPnp? _esewaPnp;
+  ESewaConfiguration? _configuration;
+ @override
+  void initState() {
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,7 +57,7 @@ class _GooglePayState extends State<GooglePay> {
                 const SizedBox(
                   width: 5,
                 ),
-                const Text('SELECT PAYMENT METHODE',
+                const Text('SELECT PAYMENT METHOD',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.black,
@@ -104,32 +113,62 @@ class _GooglePayState extends State<GooglePay> {
               thickness: 1,
               color: Color.fromARGB(255, 156, 156, 156),
             ),
-             GestureDetector(
+                 InkWell(
+                     onTap: ()async{
+                       esewa();
+                     },
+                   child: Padding(
+                     padding: EdgeInsets.only(left: 0),
+                     child: Row(
+                       children: [
+                         Container(
+                           height: 25,
+                           width: 45,
+                           padding: EdgeInsets.symmetric(horizontal: 5),
+                           decoration: BoxDecoration(
+                             border: Border.all(width: 1),
+                             borderRadius: BorderRadius.circular(5),
+                           ),
+                           child: Image(image: AssetImage('assets/images/gpay.png'),height: 20,width: 20,fit: BoxFit.cover,),
+                         ),
+                         SizedBox(
+                           width: 5,
+                         ),
+                         Text(
+                           'Esewa',
+                           style: TextStyle(
+                               fontSize: 14,
+                               fontWeight: FontWeight.w500,
+                               color: Colors.black),
+                         ),
+                         Spacer(),
+                         Icon(Icons.arrow_forward_ios,size: 15,)
+                       ],
+                     ),
+                   ),
+                 ),
+            /* GestureDetector(
               onTap: () {
-                             Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const PlacingYourOrder  (title: '',)),
-                                        );
-                                        //_placingorder();
+                esewa();
               },
                child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: Row(
                         children: [
                           Container(
                             height: 25,
                             width: 45,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            padding: EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
                               border: Border.all(width: 1),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: const Image(image: AssetImage('assets/images/gpay.png'),height: 20,width: 20,fit: BoxFit.cover,),
+                            child: Image(image: AssetImage('assets/images/gpay.png'),height: 20,width: 20,fit: BoxFit.cover,),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 5,
                           ),
-                          const Text(
+                          Text(
                             'Esewa',
                             style: TextStyle(
                                 fontSize: 14,
@@ -141,7 +180,7 @@ class _GooglePayState extends State<GooglePay> {
                         ],
                       ),
                     ),
-             ),
+             ),*/
                    const Divider(
               thickness: 1,
               color: Color.fromARGB(255, 156, 156, 156),
@@ -189,14 +228,28 @@ class _GooglePayState extends State<GooglePay> {
       ),
     );
   }
-  //  void _placingorder() {
-  //   showModalBottomSheet<void>(
-  //       shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.only(
-  //               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return         });
-  // }
+  void esewa()async {
+    _configuration = ESewaConfiguration(
+      clientID: "JB0BBQ4aD0UqIThFJwAKBgAXEUkEGQUBBAwdOgABHD4DChwUAB0R",
+      secretKey: "BhwIWQQADhIYSxILExMcAgFXFhcOBwAKBgAXEQ==",
+      environment: ESewaConfiguration.ENVIRONMENT_TEST,
+    );
+    _esewaPnp = ESewaPnp(configuration: _configuration!);
+
+    ESewaPayment _payment = ESewaPayment(
+        amount: 10,
+        productName: "Kamal",
+        productID: "512",
+        callBackURL: "http://example.com/");
+    final res = await _esewaPnp!.initPayment(payment: _payment);
+   /* res.fold((failure){
+
+    },
+        (result)
+        {
+          print(result.s)
+        }
+    )*/
+  }
 
 }

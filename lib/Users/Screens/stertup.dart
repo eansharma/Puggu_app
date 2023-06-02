@@ -519,8 +519,8 @@ class _StartupState extends State<Startup> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const RestaurentDetails(
-                              // title: '',
+                          builder: (context) =>  RestaurentDetails(
+                              title: '', address: '', image: '', seller_id: '',
                               )),
                     );
                   },

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
+import 'package:pugau/Users/Controller/Data/restaurentcontroller.dart';
 import 'package:pugau/Users/Controller/TopOffers_Controller.dart';
 import 'package:pugau/Users/Controller/food_controller.dart';
 import 'package:pugau/Users/Screens/Cart/cart.dart';
@@ -28,6 +29,7 @@ class Food extends StatefulWidget {
 class _FoodState extends State<Food> {
   int selectindex = 0;
   final TopOfferController _controller = Get.put(TopOfferController());
+  final ReataurentController rscontroller = Get.put(ReataurentController());
   final FoodController controller = Get.put(FoodController());
   @override
   Widget build(BuildContext context) {
@@ -423,7 +425,10 @@ class _FoodState extends State<Food> {
                               physics: NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2),
+                                      crossAxisCount: 2,
+                                    mainAxisSpacing: 5,
+                                    crossAxisSpacing: 3
+                                  ),
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
@@ -433,7 +438,7 @@ class _FoodState extends State<Food> {
                                     margin: EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 3),
                                     height: 10.h,
-                                    width: 100.w,
+                                    width: 102.w,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(11),
                                         image: DecorationImage(
@@ -443,8 +448,6 @@ class _FoodState extends State<Food> {
                                                         .topOfferData[index]
                                                         .imgcoupan
                                                         .toString()),
-                                            // AssetImage(
-                                            //     'assets/images/foodgrid.png'),
                                             fit: BoxFit.cover)),
                                   ),
                                 );
@@ -498,40 +501,43 @@ class _FoodState extends State<Food> {
                     SizedBox(
                       height: 3.h,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 1.5,
-                            width: Helper.getScreenWidth(context) / 3,
-                            color: PugauColors.GREY,
-                            padding: const EdgeInsets.only(
-                              top: 2,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          const Text('30 RESRAURENTS',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Container(
+                    Obx((){
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
                               height: 1.5,
                               width: Helper.getScreenWidth(context) / 3,
-                              color: const Color.fromARGB(255, 153, 153, 153),
+                              color: PugauColors.GREY,
                               padding: const EdgeInsets.only(
                                 top: 2,
-                              )),
-                        ],
-                      ),
+                              ),
+                            ),
+                             SizedBox(
+                              width: 5,
+                            ),
+                             Text(rscontroller.restaurentList.length.toString()+' RESRAURENTS',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500)),
+                             SizedBox(
+                              width: 5,
+                            ),
+                            Container(
+                                height: 1.5,
+                                width: Helper.getScreenWidth(context) / 3,
+                                color: const Color.fromARGB(255, 153, 153, 153),
+                                padding: const EdgeInsets.only(
+                                  top: 2,
+                                )),
+                          ],
+                        ),
+                      );
+  }
                     ),
                     SizedBox(
                       height: 3.h,

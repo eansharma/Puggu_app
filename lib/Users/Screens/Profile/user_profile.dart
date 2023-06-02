@@ -30,9 +30,15 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  final PrivacyController _controller = Get.put(PrivacyController());
   final TextEditingController name = TextEditingController();
   final TextEditingController number = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    name.text=Get.find<AuthController>().userProfile.value.name.toString();
+    number.text=Get.find<AuthController>().userProfile.value.phone.toString();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -126,10 +132,7 @@ class _UserProfileState extends State<UserProfile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const FevoriteList(
-                                    title: '',
-                                  )),
-                        );
+                              builder: (context) => FevoriteList()),);
                       },
                       child: Column(
                         children: const [
@@ -671,9 +674,9 @@ class _UserProfileState extends State<UserProfile> {
                           child: GetBuilder<AuthController>(
                               builder: (procontroller) {
                             var userProfile = procontroller.userProfile.value;
-                            name.text = userProfile.name.toString();
+                            /*name.text = userProfile.name.toString();
                             // number.text=userProfile.phone.toString();
-                            number.text = userProfile.phone.toString();
+                            number.text = userProfile.phone.toString();*/
 
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -702,8 +705,6 @@ class _UserProfileState extends State<UserProfile> {
                                           fontWeight: FontWeight.w500),
                                       decoration: InputDecoration(
                                         hintText: 'User Full Name',
-
-                                        // label:Text('${_authController.getUserlist.length}'),
                                         hintStyle: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w500),
@@ -715,7 +716,6 @@ class _UserProfileState extends State<UserProfile> {
                                                 color: Color.fromARGB(
                                                     255, 153, 153, 153),
                                                 width: 1)
-                                            //<-- SEE HERE
                                             ),
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius:
@@ -724,16 +724,14 @@ class _UserProfileState extends State<UserProfile> {
                                                 color: Color.fromARGB(
                                                     255, 153, 153, 153),
                                                 width: 1)
-
-                                            //<-- SEE HERE
                                             ),
                                       ),
-                                      onChanged: (value) {
+                                     /* onChanged: (value) {
                                         // Update the phone number in the controller if needed
                                         procontroller.userProfile.update((val) {
-                                          val!.phone = value;
+                                          val!.name = value;
                                         });
-                                      },
+                                      },*/
                                     )),
                                 const SizedBox(
                                   height: 10,
@@ -757,12 +755,12 @@ class _UserProfileState extends State<UserProfile> {
                                       controller: number,
                                       textAlignVertical:
                                           TextAlignVertical.bottom,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w500),
                                       decoration: InputDecoration(
                                         hintText: 'Phone Number',
-                                        hintStyle: const TextStyle(
+                                        hintStyle: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w500),
                                         border: InputBorder.none,
@@ -786,12 +784,12 @@ class _UserProfileState extends State<UserProfile> {
                                             //<-- SEE HERE
                                             ),
                                       ),
-                                      onChanged: (value) {
+                                     /* onChanged: (value) {
                                         // Update the phone number in the controller if needed
                                         procontroller.userProfile.update((val) {
                                           val!.phone = value;
                                         });
-                                      },
+                                      },*/
                                     )),
                               ],
                             );
@@ -820,11 +818,6 @@ class _UserProfileState extends State<UserProfile> {
                                     name.text.toString(),
                                     number.text.toString());
                               }
-
-                              //            Navigator.push(
-                              //    context,
-                              //    MaterialPageRoute(builder: (context) => const ResetPassword  (title: '',)),
-                              //  );
                             }),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

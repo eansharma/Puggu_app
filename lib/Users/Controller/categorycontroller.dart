@@ -1,44 +1,59 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:pugau/Data/Api/API_URLs.dart';
 import 'package:http/http.dart' as http;
-
-import '../../Data/Model/catagory_model.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../Data/Model/restaurent_model.dart';
 class CategoryController extends GetxController {
   var categoryList = <Data>[].obs;
   var isLoading = true.obs;
 
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
-    categoryData();
+    fetchRestaurentData();
   }
 
-  Future<void> categoryData() async {
+  Future fetchRestaurentData() async {
+    final pref = await SharedPreferences.getInstance();
+    var userId = pref.getString('user_id');
+    var city_id = pref.getString('city');
     try {
-      isLoading(true);
-      var request = http.Request(
-          'GET', Uri.parse(AppContent.BASE_URL + AppContent.CATEGORY_URL));
+      final res = await http.post(
+          Uri.parse(AppContent.BASE_URL + AppContent.RESTAURENT_URL),
+          body: userId!=null?{
+            'customer_id': userId,
+            "type":"normal",
+            "city_id":city_id
+          }:{
+            "type":"normal",
+            "city_id":city_id
+          }
+      );
+      if (res.statusCode == 200) {
+        var temp = jsonDecode(res.body)['data'];
 
-      http.StreamedResponse response = await request.send();
+        print("Hello......${temp.length}");
 
-      if (response.statusCode == 200) {
-        var jsonResponse = await response.stream.bytesToString();
-        var decodedResponse = jsonDecode(jsonResponse);
-        CatagoryModel categoryModel = CatagoryModel.fromJson(decodedResponse);
-        categoryList.assignAll(categoryModel.data!);
+        if (temp.isNotEmpty) {
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i] != null) {
+              Map<String, dynamic> map = temp[i];
+              categoryList.add(Data.fromJson(map));
+            }
+          }
+        }
 
-        print(categoryList);
+        update();
       }
-      update();
+
+      print("Data is received");
+      print("${categoryList.length} Aditya");
+      return categoryList;
     } catch (e) {
-      print(e);
-    } finally {
-      isLoading(false);
+      print(e.toString());
     }
   }
 }

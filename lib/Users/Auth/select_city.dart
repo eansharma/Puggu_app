@@ -8,8 +8,7 @@ import 'package:pugau/util/theme/Pugau_images.dart';
 import 'package:pugau/util/theme/Pugau_theme_colors.dart';
 import 'package:pugau/util/Helper/helper.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
-import '../Screens/Location/clear_map.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectCity extends StatefulWidget {
   const SelectCity({super.key, required String title});
@@ -20,7 +19,10 @@ class SelectCity extends StatefulWidget {
 
 class _SelectCityState extends State<SelectCity> {
   final CityController _cityController = Get.put(CityController());
-
+  void _setValue(value) async {
+    final pref = await SharedPreferences.getInstance();
+    var set1 = pref.setString('city', value);
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -80,14 +82,15 @@ class _SelectCityState extends State<SelectCity> {
                       itemBuilder: (Context, index) {
                         return GestureDetector(
                           onTap: () {
+                            _setValue(_cityController.CityList[index].id.toString());
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const Home(
+                                  builder: (context) =>  Home(
                                         title: '',
                                       )),
                             );
-                            showModalBottomSheet<void>(
+                         /*   showModalBottomSheet<void>(
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
@@ -154,9 +157,7 @@ class _SelectCityState extends State<SelectCity> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const CurrentLocationScreen(
-                                                            title: '',
-                                                          )),
+                                                          CurrentLocationScreen( )),
                                                 );
                                               }),
                                               child: Row(
@@ -184,7 +185,7 @@ class _SelectCityState extends State<SelectCity> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const SelectLocation(
+                                                       SelectLocation(
                                                         title: '',
                                                       )),
                                             );
@@ -214,7 +215,7 @@ class _SelectCityState extends State<SelectCity> {
                                   ),
                                 );
                               },
-                            );
+                            );*/
                           },
                           child: Container(
                             height: 144.px,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pugau/Users/Screens/Genie/select_genie_drop_location.dart';
+import 'package:get/get.dart';
+import 'package:pugau/Users/Genie_Controller/Genie_Controller_send.dart';
 import 'package:pugau/Users/Screens/Genie/select_genie_picup_location.dart';
 import 'package:pugau/Users/Screens/set_your_task.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../util/Helper/helper.dart';
 
@@ -13,6 +15,13 @@ class GeniePicup extends StatefulWidget {
 }
 
 class _GeniePicupState extends State<GeniePicup> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -44,7 +53,7 @@ class _GeniePicupState extends State<GeniePicup> {
               const SizedBox(
                 width: 5,
               ),
-              const Text('SET PIC & DROP DETAILS',
+              Text('SET PIC & DROP DETAILS',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.black,
@@ -62,7 +71,7 @@ class _GeniePicupState extends State<GeniePicup> {
                   )),
             ],
           ),
-          const SizedBox(
+          SizedBox(
             height: 10,
           ),
           SizedBox(
@@ -80,7 +89,7 @@ class _GeniePicupState extends State<GeniePicup> {
                     children: [
                       SizedBox(
                         width: Helper.getScreenWidth(context) / 2.3,
-                        child: const Text(
+                        child: Text(
                             'Sending high value / fragile items is not recommended',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -88,18 +97,18 @@ class _GeniePicupState extends State<GeniePicup> {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500)),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 30,
                       ),
                       Container(
                         height: 100,
                         width: 100,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(
                                     'assets/images/geniepicup.png'))),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 20,
                       ),
                     ],
@@ -111,15 +120,10 @@ class _GeniePicupState extends State<GeniePicup> {
                   child: Column(
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SelectGeniePicupLocation(
-                                      title: '',
-                                    )),
-                          );
+                        onTap: () async{
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          prefs.remove('genie_id');
+                          Get.to(()=>SelectGeniePicupLocation(type: 'pickup',));
                         },
                         child: Container(
                           height: 36,
@@ -134,7 +138,7 @@ class _GeniePicupState extends State<GeniePicup> {
                           child: Center(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                              EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -144,7 +148,7 @@ class _GeniePicupState extends State<GeniePicup> {
                                         border: Border.all(
                                           width: 1,
                                         )),
-                                    child: const Padding(
+                                    child:  Padding(
                                       padding: EdgeInsets.all(3.0),
                                       child: Text('A',
                                           textAlign: TextAlign.center,
@@ -157,14 +161,14 @@ class _GeniePicupState extends State<GeniePicup> {
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  const Text('Choose Pickup Address',
+                                   Text('Choose Pickup Address',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500)),
-                                  const Spacer(),
-                                  const Icon(
+                                  Spacer(),
+                                   Icon(
                                     Icons.add_circle,
                                     color: Colors.orange,
                                     size: 15,
@@ -175,19 +179,13 @@ class _GeniePicupState extends State<GeniePicup> {
                           ),
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SelectGenieDropLocation(
-                                      title: '',
-                                    )),
-                          );
+                          Get.to(()=>SelectGeniePicupLocation(type: 'drop',));
+
                         },
                         child: Center(
                           child: Container(
@@ -239,18 +237,15 @@ class _GeniePicupState extends State<GeniePicup> {
                           ),
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SetYourTask(
-                                      title: '',
-                                    )),
-                          );
+                        onTap: () async{
+
+                          await Get.find<Genie_Controller>().genies();
+                          Get.to(()=>SetYourTask());
+
                         },
                         child: Center(
                           child: Container(
